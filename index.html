@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E🎮%3C/text%3E%3C/svg%3E">
+<meta name="description" content="Pixel Point — компьютерный клуб в Семее: онлайн-бронирование мест, игры, турниры, бар 24/7.">
+<meta name="theme-color" content="#17151e">
+<title>PixelPoint — Компьютерный клуб</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#14131a;--mu:#75717f;--cv:#f4f3f7;--ln:#e5e2e9;--vi:#6c42ef;--vd:#5430cb;--vs:#eee9ff;--li:#c7f45a;--dk:#17151e;--r:#b72d3b;--g:#278046}
+*{box-sizing:border-box}body{margin:0;font:500 14px Manrope,sans-serif;color:var(--ink);background:linear-gradient(145deg,#f7f6fa,var(--cv) 50%,#f2f0f8);min-height:100vh}
+button,input{font:inherit;color:inherit}button{border:0;cursor:pointer;background:none}button:disabled{cursor:not-allowed}
+h1,h2,h3,.f{font-family:'Space Grotesk',sans-serif;margin:0}
+:focus-visible{outline:3px solid #6c42ef55;outline-offset:2px}
+svg{flex:none}.row{display:flex;align-items:center;gap:10px}.mu{color:var(--mu)}
+header{height:72px;padding:0 clamp(16px,5vw,76px);display:flex;align-items:center;justify-content:space-between;gap:20px;background:#ffffffd6;backdrop-filter:blur(16px);border-bottom:1px solid var(--ln);position:sticky;top:0;z-index:20}
+.bm{width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:var(--li);color:var(--dk);transform:rotate(-3deg)}
+.bn{font:700 19px 'Space Grotesk';letter-spacing:-.04em}.bn b{color:var(--vi)}
+nav{display:flex;height:100%}nav button{padding:0 16px;font-weight:700;font-size:14px;color:var(--mu);position:relative}
+nav button.on{color:var(--ink)}nav button.on:after{content:'';position:absolute;left:16px;right:16px;bottom:0;height:3px;background:var(--vi);border-radius:4px 4px 0 0}
+nav i{font-style:normal;background:var(--vi);color:#fff;border-radius:20px;padding:1px 6px;font-size:10px;margin-left:5px}
+.loc{background:var(--cv);border:1px solid var(--ln);border-radius:12px;padding:10px 14px;font-weight:700;font-size:13px}.loc svg:first-child{color:var(--vi)}
+.pf{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--dk);color:#fff}.pf.on{background:var(--li);color:var(--dk)}
+main{max-width:1440px;margin:0 auto;padding:0 clamp(16px,5vw,76px)}
+.hero{margin-top:26px;min-height:300px;padding:48px;border-radius:24px;position:relative;overflow:hidden;color:#fff;background:linear-gradient(90deg,#14131afc,#14131ae8 42%,#14131a30),url(https://images.unsplash.com/photo-1633545505446-586bf83717f0?auto=format&fit=crop&q=80&w=1800) center/cover #14131a;box-shadow:0 24px 65px #25184530}
+.ey{display:flex;align-items:center;gap:8px;color:var(--li);font-weight:800;font-size:12px;letter-spacing:.14em;text-transform:uppercase}.ey:before{content:'';width:18px;height:2px;background:currentColor}
+.hero h1{font-size:clamp(40px,5vw,64px);line-height:.98;letter-spacing:-.05em;margin:14px 0}.hero h1 span{color:var(--li)}
+.hero p{max-width:440px;color:#ffffffb0;line-height:1.5}
+.hw{position:absolute;right:30px;bottom:28px;display:grid;gap:8px;width:290px}
+.hc{display:flex;align-items:center;gap:12px;padding:12px 16px;border:1px solid #ffffff2e;border-radius:16px;background:#14131abd;backdrop-filter:blur(12px)}
+.hc .ic{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;background:var(--vi)}.hc.act{border-color:#c7f45a59}.hc.act .ic{background:var(--li);color:var(--dk)}
+.hc small{display:block;color:#ffffff94;font-size:11px;text-transform:uppercase;letter-spacing:.06em}.hc b{font:700 17px 'Space Grotesk'}.hc.act b{color:var(--li)}
+.lay{margin:22px 0 40px;display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:22px;align-items:start}
+.card{background:#ffffffeb;border-radius:22px;padding:30px;box-shadow:0 18px 45px #211a3314}
+.sh{display:flex;align-items:center;gap:14px;margin-bottom:18px;scroll-margin-top:130px}
+.sn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--vs);color:var(--vi);font:700 13px 'Space Grotesk'}
+.sh h2{font-size:19px;letter-spacing:-.02em}.sh small{color:var(--mu);font-size:12px}
+hr{border:0;height:1px;background:var(--ln);margin:28px 0}
+.dr{display:grid;grid-template-columns:repeat(5,1fr) 52px;gap:9px}
+.dc{min-height:88px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid var(--ln);border-radius:14px;background:#fff;transition:.2s}
+.dc small{font-size:11px;color:var(--mu)}.dc b{font:700 24px 'Space Grotesk'}
+.dc:hover,.tc:hover,.zc:hover{border-color:#6c42ef73}
+.sel{border-color:var(--vi)!important;background:var(--vi)!important;color:#fff!important;box-shadow:0 8px 22px #6c42ef38}.sel small{color:#ffffffb0}
+.cb{border:1px dashed var(--ln);border-radius:14px;background:var(--cv);color:var(--vi);display:grid;place-items:center}
+.tr{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:12px}
+.tc{padding:11px;border:1px solid var(--ln);border-radius:10px;background:#fff;color:var(--mu);font:600 13px 'Space Grotesk'}
+.tc:disabled{opacity:.4;text-decoration:line-through}.tc.s{color:var(--vi);border-color:var(--vi);background:var(--vs)}
+.zg{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
+.zc{padding:17px;text-align:left;display:flex;flex-direction:column;gap:3px;position:relative;border:1px solid var(--ln);border-radius:16px;background:#fff;transition:.2s}
+.zc:hover{transform:translateY(-3px)}.zc.s{border-color:var(--vi);background:linear-gradient(145deg,#fff,var(--vs))}
+.zi{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:var(--vs);color:var(--vi);margin-bottom:8px}.zc.s .zi{background:var(--vi);color:#fff}
+.zc b{font:700 15px 'Space Grotesk'}.zc span{font-size:11px;color:var(--mu)}.zc em{margin-top:10px;font:700 14px 'Space Grotesk';font-style:normal;color:var(--vi)}
+.zc:after{content:'';position:absolute;top:17px;right:17px;width:16px;height:16px;border-radius:50%;border:1px solid var(--ln)}.zc.s:after{border:5px solid var(--vi)}
+.lg{display:flex;gap:12px;font-size:11px;color:var(--mu);margin-left:auto}.lg i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;background:#fff;border:1px solid #b9b5c0}.lg i.b{background:#c7c3cc}.lg i.v{background:var(--vi);border-color:var(--vi)}
+.map{padding:18px;border-radius:18px;background:linear-gradient(145deg,#f4f3f7f5,#ebe6fae0);border:1px solid #6c42ef1f}
+.scr{width:68%;margin:0 auto 16px;padding:5px;text-align:center;border-top:2px solid #d4d0da;color:var(--mu);font-size:10px;letter-spacing:.1em}
+.zs{display:grid;grid-template-columns:1fr 1fr;gap:12px}.z{padding:13px;border-radius:14px;background:#ffffffaa;border-left:3px solid #8f8a98}
+.z.standard,.z.bootcamp{grid-column:1/-1}.z.premium{border-color:var(--vi)}.z.vip{border-color:#e0a52c}.z.bootcamp{border-color:#78a91d}
+.zh{display:flex;justify-content:space-between;margin-bottom:10px;font-size:11px;color:var(--mu)}.zh b{font:700 13px 'Space Grotesk';color:var(--ink);display:block}.zh em{font-style:normal;font-weight:800;color:var(--g)}
+.sg{display:grid;gap:7px}.standard .sg{grid-template-columns:repeat(8,1fr)}.premium .sg{grid-template-columns:repeat(6,1fr)}.vip .sg{grid-template-columns:repeat(3,1fr)}.bootcamp .sg{grid-template-columns:repeat(5,1fr)}
+.st{min-height:50px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border:1px solid var(--ln);border-radius:9px;background:#ffffffe6;color:var(--mu);font:600 10px 'Space Grotesk';transition:.18s}
+.st:hover:not(:disabled){color:var(--vi);border-color:var(--vi);transform:translateY(-2px)}.st:disabled{background:#dedce2;opacity:.6}
+.st.sel{box-shadow:0 5px 15px #6c42ef33}.vip .st.sel{background:linear-gradient(135deg,#ffd96e,#e8aa2e)!important;color:var(--dk)!important;border-color:#e0a52c!important}.bootcamp .st.sel{background:var(--li)!important;color:var(--dk)!important;border-color:#8cbd2c!important}
+.mf{margin-top:14px;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--mu);text-transform:uppercase;letter-spacing:.06em}.mf b{padding:5px 18px;border-radius:20px;background:#dedbe3;font-weight:600}
+.rig{padding:22px;display:grid;grid-template-columns:.9fr 1.2fr;gap:22px;align-items:center;border-radius:18px;color:#fff;background:radial-gradient(circle at 88% 10%,#6c42ef94,transparent 40%),var(--dk)}
+.rig h3{font-size:22px;margin:8px 0;line-height:1.05}.rig p{margin:0;color:#ffffff8c;font-size:12px;line-height:1.5}
+.sp{display:grid;grid-template-columns:1fr 1fr;gap:8px}.sp div{padding:11px;border:1px solid #ffffff1a;border-radius:10px;background:#ffffff0d}.sp b{display:block;font:600 12px 'Space Grotesk'}.sp span{font-size:10px;color:#ffffff6b;text-transform:uppercase}
+.am{display:grid;grid-template-columns:1fr 1fr;gap:10px}.a{padding:14px;display:flex;gap:12px;align-items:center;border:1px solid var(--ln);border-radius:14px;background:linear-gradient(145deg,#fff,var(--cv))}
+.a .zi{margin:0;width:40px;height:40px}.a b{font:700 14px 'Space Grotesk'}.a p{margin:3px 0 0;font-size:11px;color:var(--mu)}
+.inc{margin-top:12px;padding:13px 15px;display:flex;flex-wrap:wrap;gap:8px 10px;border-radius:12px;background:var(--dk);color:#ffffffb8;font-size:11px}.inc span{color:var(--li)}
+.sum{position:sticky;top:92px}.sum .k{color:var(--vi);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.sum h2{font-size:27px;margin-top:6px;letter-spacing:-.04em}
+.pl{display:flex;gap:12px;align-items:center;margin:18px 0;padding:10px;border-radius:14px;background:var(--cv)}.pl div:first-child{width:56px;height:48px;border-radius:10px;background:url(https://images.unsplash.com/photo-1771589794065-bf60b51c9915?fit=crop&q=80&w=300) center/cover #2a2340}
+.pl b{font:600 13px 'Space Grotesk'}.pl small{display:block;color:var(--mu);font-size:11px;margin-top:3px}
+.dt{padding:14px 0;border-block:1px solid var(--ln);display:grid;gap:11px}.dt div{display:flex;justify-content:space-between;font-size:13px}.dt span{color:var(--mu)}
+.du{margin:16px 0;display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:13px}.du small{display:block;color:var(--mu);font-weight:500;font-size:11px}
+.ct{display:flex;align-items:center;gap:10px;padding:4px;background:var(--cv);border-radius:10px}.ct button{width:30px;height:30px;display:grid;place-items:center;border-radius:7px;background:#fff;color:var(--vi)}.ct button:disabled{color:#bbb7c0}.ct b{min-width:28px;text-align:center;font:700 13px 'Space Grotesk'}
+.tot{padding:16px;display:flex;justify-content:space-between;align-items:flex-end;border-radius:14px;background:var(--dk);color:#fff}.tot small{display:block;color:#ffffff70;font-size:11px;margin-top:3px}.tot b{font:700 26px 'Space Grotesk';color:var(--li)}
+.pt{margin:16px 0 8px;font-weight:800;font-size:13px}.pg{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.pm{min-height:46px;padding:7px 9px;display:flex;align-items:center;gap:7px;text-align:left;border:1px solid var(--ln);border-radius:10px;background:#fff;color:var(--mu);font-size:11px;font-weight:700}
+.pm.s{color:var(--ink);border-color:var(--vi);background:var(--vs);box-shadow:inset 0 0 0 1px var(--vi)}
+.pk{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:#fff;font:800 11px 'Space Grotesk'}
+.er{margin-top:10px;padding:9px 11px;border-radius:9px;color:var(--r);background:#fff0f2;font-size:12px}
+.btn{width:100%;min-height:50px;margin-top:12px;border-radius:13px;display:flex;justify-content:center;align-items:center;gap:8px;color:#fff;background:var(--vi);font-weight:800;box-shadow:0 9px 24px #6c42ef40;transition:.2s}.btn:hover{background:var(--vd)}
+.btn.ok{background:var(--g);box-shadow:none}.ok2{margin-top:10px;color:var(--g);font-size:12px;text-align:center}.nt{margin-top:10px;text-align:center;color:var(--mu);font-size:11px}
+.sec{margin:0 0 26px;padding:34px;border-radius:24px;scroll-margin-top:130px}
+.dark{color:#fff;background:radial-gradient(circle at 85% 0,#6c42ef6b,transparent 35%),var(--dk)}
+.sec h2{font-size:clamp(28px,3vw,38px);letter-spacing:-.05em;margin:9px 0}.sec>div>p,.qi p{max-width:520px;color:#ffffff80;line-height:1.5;margin:0}
+.hd{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:22px}.pill{padding:10px 14px;border:1px solid #ffffff1a;border-radius:12px;color:var(--li);font-weight:800;font-size:12px}
+.tg{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.t{padding:20px;border:1px solid #ffffff1a;border-radius:17px;background:#ffffff0b}
+.t .top{display:flex;justify-content:space-between;align-items:center}.t .top b{font:700 28px 'Space Grotesk';color:#ffffff30}.t .top span{padding:5px 9px;border-radius:20px;background:#c7f45a1a;color:var(--li);font-size:10px;font-weight:800}
+.t h3{margin-top:14px;font-size:23px;letter-spacing:-.04em}.t small{color:#ffffff70;font-size:12px}
+.ti{margin:16px 0;padding:13px 0;display:grid;grid-template-columns:1fr 1fr;gap:12px;border-block:1px solid #ffffff14}.ti span{display:block;color:#ffffff59;font-size:10px;text-transform:uppercase;margin-bottom:4px}.ti b{font:600 12px 'Space Grotesk'}.ti div:last-child b{color:var(--li)}
+.tf{display:flex;justify-content:space-between;align-items:center;font-size:12px;color:#ffffff80}
+.tb{padding:9px 13px;border-radius:9px;background:var(--li);color:var(--dk);font-weight:800;font-size:12px}.tb.r{background:#ffffff20;color:#fff}
+.qs{display:grid;grid-template-columns:.7fr 1.3fr;gap:28px;background:#fff;border:1px solid var(--ln)}.qs h2{color:var(--ink)}.qs .qi p{color:var(--mu)}
+.orb{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;background:var(--li);margin-bottom:20px}
+.qb{margin-top:22px;max-width:240px;padding:17px;border-radius:15px;color:#fff;background:var(--vi);display:flex;justify-content:space-between;align-items:center;font-size:12px}.qb b{font:700 32px 'Space Grotesk';color:var(--li)}
+.ql{display:grid;gap:9px}.q{padding:13px;display:grid;grid-template-columns:40px 1fr auto;align-items:center;gap:12px;border:1px solid var(--ln);border-radius:14px;background:var(--cv)}.q.c{background:var(--vs);border-color:#6c42ef59}
+.q .zi{margin:0;background:#fff}.q b{font:700 14px 'Space Grotesk'}.q small{display:block;color:var(--mu);font-size:11px;margin-top:2px}.q em{color:var(--vi);font-size:12px;font-weight:800;font-style:normal}
+.q .l{display:flex;justify-content:space-between;gap:10px}.pr{height:5px;margin:9px 0 4px;border-radius:10px;background:var(--ln);overflow:hidden}.pr i{display:block;height:100%;background:var(--vi)}
+.q .m{display:flex;justify-content:space-between;color:var(--mu);font-size:10px}.qbt{min-width:74px;padding:10px;border-radius:9px;background:var(--vi);color:#fff;font-weight:800;font-size:12px}.qbt:disabled{background:var(--ln);color:var(--mu)}
+footer{padding:26px clamp(16px,5vw,76px);display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;background:var(--dk);color:#ffffff80;font-size:12px}footer .bn{color:#fff}
+footer .row span{width:8px;height:8px;border-radius:50%;background:var(--li);box-shadow:0 0 0 4px #c7f45a1a}
+.fab{position:fixed;right:24px;bottom:22px;z-index:30;padding:8px 16px 8px 8px;display:flex;align-items:center;gap:10px;border:1px solid #ffffff2e;border-radius:15px;color:#fff;background:#17151ee6;backdrop-filter:blur(14px);box-shadow:0 14px 38px #140f234d;text-align:left}
+.fab .ic{width:40px;height:40px;border-radius:10px;display:grid;place-items:center;background:var(--li);color:var(--dk)}.fab b{display:block;font-size:12px}.fab small{color:#ffffff73;font-size:10px}
+.bd{position:fixed;inset:0;z-index:50;padding:20px;display:grid;place-items:center;background:#0e0c149e;backdrop-filter:blur(8px)}
+.md{width:min(500px,100%);max-height:calc(100vh - 40px);overflow-y:auto;padding:28px;position:relative;border-radius:22px;background:#fff;box-shadow:0 28px 80px #140f234d;animation:up .2s}.md.w{width:min(680px,100%)}.md.x{width:min(1080px,100%)}
+@keyframes up{from{opacity:0;transform:translateY(12px)}}
+.x0{position:absolute;top:18px;right:18px;width:34px;height:34px;border-radius:10px;background:var(--cv);color:var(--mu);font-size:22px;line-height:1;z-index:2}
+.mk{color:var(--vi);font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}.md h2{font-size:25px;letter-spacing:-.04em;margin:6px 40px 18px 0}
+.vl{display:grid;gap:9px}.v{display:grid;grid-template-columns:38px 1fr auto;align-items:center;gap:10px;padding:13px;text-align:left;border:1px solid var(--ln);border-radius:13px}.v:hover,.v.s{border-color:var(--vi);background:var(--vs)}.v b{font:600 13px 'Space Grotesk';display:block}.v small{color:var(--mu);font-size:11px}.v em{color:var(--g);font-size:11px;font-style:normal}.v .zi{margin:0}
+.cg{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}.cd{min-height:66px;display:flex;flex-direction:column;align-items:center;justify-content:center;border:1px solid var(--ln);border-radius:10px;background:#fff}.cd small{font-size:10px;color:var(--mu)}.cd b{font:700 17px 'Space Grotesk'}
+.tabs{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:4px;padding:4px;margin:18px 0 14px;border-radius:12px;background:var(--cv)}.tabs button{min-height:40px;border-radius:9px;color:var(--mu);font-weight:800;font-size:13px}.tabs .on{background:#fff;color:var(--ink);box-shadow:0 3px 12px #211a3314}
+.tabs span{background:var(--vs);color:var(--vi);border-radius:10px;padding:2px 6px;font-size:10px;margin-left:4px}
+.fm{display:grid;gap:11px}.fm label span{display:block;margin-bottom:6px;color:var(--mu);font-size:12px;font-weight:700}
+.in{width:100%;min-height:44px;padding:0 13px;border:1px solid var(--ln);border-radius:11px;outline:none;background:#fff}.in:focus{border-color:var(--vi);box-shadow:0 0 0 3px var(--vs)}
+.wal{padding:19px;display:flex;justify-content:space-between;align-items:center;border-radius:16px;color:#fff;background:radial-gradient(circle at 86% 10%,#c7f45a3d,transparent 32%),var(--dk)}.wal small{color:var(--li);font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase}.wal b{display:block;font:700 32px 'Space Grotesk';margin-top:4px}
+.pkg{width:100%;margin-top:10px;padding:13px 15px;display:flex;justify-content:space-between;align-items:center;border:1px solid var(--ln);border-radius:12px;text-align:left}.pkg:hover{border-color:var(--vi);background:var(--vs)}.pkg small{display:block;color:var(--mu);font-size:11px}.pkg em{color:var(--vi);font-style:normal;font-weight:800}
+.bo{margin:16px 0 8px;display:grid;grid-template-columns:1fr 1fr;gap:8px}.bo div{padding:14px;border-radius:12px;background:var(--cv);font-size:12px;color:var(--mu)}.bo b{display:block;color:var(--ink);font:700 14px 'Space Grotesk';margin-top:4px}
+.sb{width:100%;min-height:44px;margin-top:8px;border:1px solid var(--ln);border-radius:12px;font-weight:800}.sb:hover{border-color:var(--vi);color:var(--vi)}.lo{width:100%;margin-top:10px;padding:8px;color:var(--mu);font-size:12px}.lo:hover{color:var(--r)}
+.hs{display:grid;gap:8px}.h{padding:12px;display:grid;grid-template-columns:1.2fr 1fr auto;gap:12px;align-items:center;border:1px solid var(--ln);border-radius:12px;background:var(--cv);font-size:12px}.h b{display:block;font:600 13px 'Space Grotesk'}.h span{color:var(--mu);font-size:11px}
+.h em{font-style:normal;padding:5px 9px;border-radius:20px;background:var(--ln);color:var(--mu);font-size:11px;font-weight:800}.h em.u{background:#39a65e1a;color:var(--g)}.h button{grid-column:1/-1;justify-self:end;color:var(--r);font-size:11px;font-weight:700}
+.ff{display:grid;grid-template-columns:1fr auto;gap:8px}.ff button{padding:0 18px;border-radius:11px;background:var(--vi);color:#fff;font-weight:800}
+.fr{padding:10px;display:grid;grid-template-columns:38px 1fr auto;gap:10px;align-items:center;border:1px solid var(--ln);border-radius:11px;background:var(--cv);margin-top:7px}.fr .zi{margin:0;font:700 11px 'Space Grotesk'}.fr b{font:700 13px 'Space Grotesk'}.fr small{display:block;color:var(--mu);font-size:11px}.fr small.o{color:var(--g)}.fr button{color:var(--mu);font-size:11px}.fr button:hover{color:var(--r)}
+.hero2{margin:-28px -28px 20px;padding:32px 34px;min-height:150px;display:flex;align-items:flex-end;justify-content:space-between;color:#fff;border-radius:22px 22px 18px 18px;background:linear-gradient(90deg,#120f18fa,#120f18bd,#120f182e),url(https://images.unsplash.com/photo-1700835880321-4526f0c41c91?fit=crop&q=80&w=1100) center/cover #17151e}
+.hero2 h2{margin:6px 0}.hero2 p{margin:0;max-width:400px;color:#ffffff99;font-size:12px}.hero2 .mk{color:var(--li)}
+.cbg{padding:9px 13px;border:1px solid #ffffff2e;border-radius:11px;background:#14131aa6;font-weight:800;display:flex;gap:7px;align-items:center}
+.cats{display:flex;gap:4px;padding:4px;background:var(--cv);border-radius:11px;overflow-x:auto}.cats button{padding:0 14px;min-height:34px;border-radius:8px;color:var(--mu);font-weight:800;font-size:12px;white-space:nowrap}.cats .on{background:var(--vi);color:#fff}
+.tb2{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:14px;font-size:12px;color:var(--mu)}
+.pg2{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}.p{padding:9px;display:flex;flex-direction:column;gap:9px;border:1px solid var(--ln);border-radius:14px;background:#fff}
+.p .im{aspect-ratio:1.55;border-radius:10px;overflow:hidden;position:relative;background:var(--cv)}.p img{width:100%;height:100%;object-fit:cover;display:block}.p .n{position:absolute;top:7px;right:7px;min-width:24px;height:24px;display:grid;place-items:center;border-radius:20px;background:var(--vi);color:#fff;font-size:11px;font-weight:800}
+.p b{font:700 13px 'Space Grotesk'}.p small{display:block;color:var(--mu);font-size:11px;margin:3px 0}.p em{color:var(--vi);font-style:normal;font-weight:800}
+.pa{margin-top:auto;min-height:32px;display:flex;justify-content:center;align-items:center;gap:4px;border-radius:8px;background:var(--vs);color:var(--vi);font-weight:800;font-size:12px}
+.pc{margin-top:auto;display:grid;grid-template-columns:34px 1fr 34px;align-items:center;text-align:center;border-radius:8px;background:var(--cv);font-weight:800}.pc button{height:32px;display:grid;place-items:center;border-radius:7px;background:#fff;color:var(--vi)}
+.ck{margin-top:16px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:15px;border-radius:14px;color:#fff;background:var(--dk)}.ck small{display:block;color:#ffffff73;font-size:11px}.ck b{font:700 20px 'Space Grotesk';color:var(--li)}
+.ck button{min-height:40px;padding:0 18px;border-radius:10px;background:var(--li);color:var(--dk);font-weight:800}.ck button:disabled{background:#ffffff1a;color:#ffffff59}
+.rs{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:8px}.rs button{padding:11px;display:flex;align-items:center;gap:7px;text-align:left;border:1px solid var(--ln);border-radius:10px;font-size:12px}.rs .s{border-color:var(--vi);color:var(--vi);background:var(--vs)}
+.ok3{margin-top:10px;padding:10px;border-radius:10px;color:var(--g);background:#39a65e1a;text-align:center;font-size:12px}
+@media(max-width:1000px){header{height:auto;flex-wrap:wrap;padding-top:10px;padding-bottom:0}nav{order:3;width:100%;height:46px;overflow-x:auto}nav button{white-space:nowrap}.lay,.qs,.tg,.rv{grid-template-columns:1fr}.sum{position:static}}
+@media(max-width:720px){.loc span{display:none}.hero{padding:30px 22px 200px}.hw{left:16px;right:16px;width:auto}.card{padding:20px 16px}.sec{padding:22px 16px}
+.dr{grid-template-columns:repeat(3,1fr)}.dc:nth-of-type(n+4){display:none}.tr{grid-template-columns:repeat(3,1fr)}.zg,.am,.rig,.zs{grid-template-columns:1fr}.z.standard,.z.bootcamp{grid-column:auto}
+.standard .sg,.premium .sg{grid-template-columns:repeat(4,1fr)}.pg2{grid-template-columns:1fr 1fr}.hd{flex-direction:column;align-items:flex-start}.cg{grid-template-columns:repeat(4,1fr)}.fab span+span{display:none}.q{grid-template-columns:40px 1fr}.qbt{grid-column:2;justify-self:start}.sh{flex-wrap:wrap}.lg{margin-left:0}}
+@media(max-width:480px){.pg2{grid-template-columns:1fr}.ck{flex-direction:column;align-items:stretch}.rs{grid-template-columns:1fr}}
+.wh{background:#fff;border:1px solid var(--ln);box-shadow:0 18px 45px #211a3310}.wh h2{color:var(--ink)}.wh p.c{color:var(--mu);margin:0;max-width:520px;line-height:1.5}
+.lns{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:16px}.ln{padding:12px;display:flex;align-items:center;gap:10px;border:1px solid var(--ln);border-radius:14px;background:var(--cv);text-align:left}.ln.s{border-color:var(--vi);background:var(--vs)}
+.ln i{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;color:#fff;font:700 15px 'Space Grotesk';font-style:normal}.ln b{display:block;font:700 13px 'Space Grotesk'}.ln small{color:var(--mu);font-size:11px}
+.gt{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:14px}.gt .in{max-width:240px}
+.gg{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}.gc{padding:12px;display:grid;grid-template-columns:42px 1fr;gap:4px 12px;align-items:center;border:1px solid var(--ln);border-radius:14px;background:#fff}
+.gi{width:42px;height:42px;grid-row:span 2;border-radius:11px;display:grid;place-items:center;color:#fff;font:700 18px 'Space Grotesk'}.gc b{font:700 13px 'Space Grotesk';display:block}.gc small{color:var(--mu);font-size:11px}.lb{justify-self:start;padding:3px 8px;border-radius:20px;color:#fff;font-size:10px;font-weight:800}
+.rv{display:grid;grid-template-columns:.85fr 1.15fr;gap:24px}.avg{display:flex;gap:16px;align-items:center;margin-bottom:14px}.avg b{font:700 46px 'Space Grotesk';line-height:1}.stars{color:#f5b301;letter-spacing:2px}
+.bar{display:grid;grid-template-columns:14px 1fr 22px;gap:8px;align-items:center;font-size:11px;color:var(--mu);margin:4px 0}.bar i{height:6px;border-radius:6px;background:var(--ln);overflow:hidden}.bar u{display:block;height:100%;background:#f5b301}
+.sr{font-size:30px;color:#d6d2dc;padding:0 2px}.sr.on{color:#f5b301}.rc{padding:16px;border:1px solid var(--ln);border-radius:14px;background:var(--cv);margin-bottom:9px}.rc .top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:6px}
+.rc b{font:700 14px 'Space Grotesk'}.rc small{color:var(--mu);font-size:11px}.rc p{margin:0;font-size:13px;line-height:1.5}.rc button{color:var(--r);font-size:11px;font-weight:700;margin-top:6px}
+.gc{padding:0;display:block;overflow:hidden}.cv{aspect-ratio:2.14;position:relative;display:grid;place-items:center;color:#fff;font:700 36px 'Space Grotesk'}.cv img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.gb{padding:11px 13px 13px}.gb .lb{display:inline-block;margin-top:7px}.gc:hover .cv img{transform:scale(1.04)}.cv img{transition:transform .3s}
+.fq{border:1px solid var(--ln);border-radius:12px;background:var(--cv);margin-bottom:8px;padding:0 14px}.fq summary{cursor:pointer;padding:14px 0;font-weight:700}.fq p{margin:0 0 14px;font-size:13px;line-height:1.5;color:var(--mu)}
+.mp{display:inline-block;margin-top:8px;color:var(--vi);font-weight:800;font-size:13px}
+.ar{padding:13px;display:grid;grid-template-columns:1fr auto;gap:8px 12px;align-items:center;border:1px solid var(--ln);border-radius:12px;background:var(--cv);margin-bottom:8px;font-size:13px}.ar b{font:700 14px 'Space Grotesk'}.ar small{display:block;color:var(--mu);font-size:11px;margin-top:3px}
+.ab{padding:9px 13px;border-radius:9px;background:var(--vi);color:#fff;font-weight:800;font-size:12px}.ab.g{background:var(--ln);color:var(--mu)}.kp{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0}.kp div{padding:14px;border-radius:12px;background:var(--dk);color:#ffffff90;font-size:11px}.kp b{display:block;font:700 22px 'Space Grotesk';color:var(--li)}
+@media(max-width:720px){.kp{grid-template-columns:1fr 1fr}.ar{grid-template-columns:1fr}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const $=s=>document.querySelector(s),fmt=n=>n.toLocaleString('ru-RU')+' ₸';
+const P0={users:{},me:null,bookings:[],hours:12,bonus:0,friends:[{l:'nurik_cs',s:'В игре · CS2',o:1},{l:'aika.gg',s:'Онлайн',o:1},{l:'semey_wolf',s:'Был 2 часа назад',o:0}],tours:[],claimed:[],cart:{},calls:[],orders:[],reviews:[{id:1,n:'Данияр',r:5,t:'Premium-зал огонь: 240 Гц и тишина, пинг в CS2 стабильный. Персонал быстрый.',d:'12.09.2026'},{id:2,n:'Аружан',r:5,t:'Приходим командой на буткемп. Удобно, что всё бронируется онлайн.',d:'14.09.2026'},{id:3,n:'Ерлан',r:4,t:'Отличные компьютеры и кресла. В выходные вечером многолюдно, лучше бронировать заранее.',d:'18.09.2026'},{id:4,n:'Мадина',r:5,t:'Люблю ночные сеты: бар работает круглосуточно и заказ приносят прямо к месту.',d:'21.09.2026'},{id:5,n:'Тимур',r:4,t:'Большая библиотека игр, всё установлено и обновлено. Хотелось бы больше турниров по Dota.',d:'25.09.2026'}],end:0,sst:''};
+let P;try{P={...P0,...JSON.parse(localStorage.getItem('pp')||'{}')}}catch{P=P0}
+const ADMIN_PIN='2026';
+const save=()=>{const j=JSON.stringify(P);if(localStorage.getItem('pp')!==j)localStorage.setItem('pp',j)};
+const hm=()=>new Date().toLocaleString('ru',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+const st={di:0,time:'20:00',zone:'premium',stn:'P06',dur:3,pay:'kaspi',venue:0,modal:null,tab:'o',auth:'login',cat:'all',err:'',nav:'booking',adm:0,at:'b',pc:'',pd:'',gg:'all',gl:'',gq:'',rate:0,rtext:'',rerr:'',ok:0,reason:'Нужна помощь с компьютером',note:'',sent:0,ferr:'',aerr:'',order:0};
+const I={cal:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/>',cart:'<path d="M3 4h2l2.2 10.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L20 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="17" cy="20" r="1"/>',chev:'<path d="m9 18 6-6-6-6"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',coffee:'<path d="M4 9h13v5a6 6 0 0 1-6 6h-1a6 6 0 0 1-6-6V9Z"/><path d="M17 11h1a3 3 0 0 1 0 6h-2M7 4c0 1 1 1.5 1 2.5M12 4c0 1 1 1.5 1 2.5"/>',pad:'<path d="M7 7h10a5 5 0 0 1 4.6 7l-1.1 2.7a2.5 2.5 0 0 1-4 1l-1.6-1.4H9.1l-1.6 1.4a2.5 2.5 0 0 1-4-1L2.4 14A5 5 0 0 1 7 7Z"/><path d="M7 10v4M5 12h4M16 11h.01M18 13h.01"/>',head:'<path d="M4 14v-2a8 8 0 0 1 16 0v2"/><path d="M6 13H5a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h2v-7ZM18 13h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-2v-7Z"/>',loc:'<path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/>',minus:'<path d="M5 12h14"/>',mon:'<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>',plus:'<path d="M12 5v14M5 12h14"/>',spark:'<path d="m12 2 1.5 5.5L19 9l-5.5 1.5L12 16l-1.5-5.5L5 9l5.5-1.5L12 2Z"/>',cup:'<path d="M8 4h8v4a4 4 0 0 1-8 0V4ZM10 12v4M14 12v4M8 20h8M10 16h4"/><path d="M8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',wifi:'<path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19" r="1"/>',bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/>'};
+const ic=(n,s=20)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${I[n]}</svg>`;
+const D=Array.from({length:14},(_,i)=>{const d=new Date();d.setDate(d.getDate()+i);const f=d.toLocaleDateString('ru',{day:'numeric',month:'long'}).split(' ');return{k:d.toDateString(),day:i?d.toLocaleDateString('ru',{weekday:'short'}).replace(/^./,c=>c.toUpperCase()):'Сегодня',n:f[0],m:f[1],full:d.toLocaleDateString('ru',{day:'numeric',month:'long',year:'numeric'})}});
+const T=['18:00','19:00','20:00','21:00','22:00','23:00'];
+const Z=[{id:'standard',n:'Standard',m:'RTX 4060 · 165 Гц',p:600,i:'mon'},{id:'premium',n:'Premium',m:'RTX 4070 SUPER · 240 Гц',p:1000,i:'spark'},{id:'vip',n:'VIP Room',m:'RTX 4080 · 360 Гц · приватно',p:1500,i:'cup'},{id:'bootcamp',n:'Bootcamp',m:'5 мест рядом',p:4500,i:'head'}];
+const G=[{id:'standard',t:'Standard Hall',m:'24 места · RTX 4060',x:'S',c:24},{id:'premium',t:'Premium Arena',m:'12 мест · RTX 4070 SUPER',x:'P',c:12},{id:'vip',t:'VIP Rooms',m:'6 приватных мест · RTX 4080',x:'V',c:6},{id:'bootcamp',t:'Bootcamp',m:'2 команды по 5 мест',x:'B',c:10}];
+const DEF={standard:'S01',premium:'P06',vip:'V01',bootcamp:'B01'};
+const AM=[['pad','PlayStation 5','2 лаунж-зоны, OLED 4K и коллекция игр'],['cup','Турнирная арена','Командные буткемпы и еженедельные турниры'],['coffee','Бар и кухня','Напитки, снеки и горячие комбо круглосуточно'],['wifi','Интернет 1 Гбит/с','Два независимых канала и низкий пинг']];
+const V=[['Pixel Point Центр','ул. Кабанбай батыра, 40','40 мест свободно'],['Pixel Point Абай','пр. Шакарима, 12','28 мест свободно']];
+const PM=[['hours','Баланс часов','','#6c42ef'],['kaspi','Kaspi Pay','K','#f14652'],['halyk','Halyk Bank','H','#08a35a'],['card','Visa / Mastercard','••','#182e71'],['cash','Оплата в клубе','₸','#c7f45a']];
+const TR=[['cs2','Counter-Strike 2','5 × 5 · Single Elimination','13 октября · 18:00','150 000 ₸',12,16],['val','Valorant','5 × 5 · Double Elimination','20 октября · 17:00','120 000 ₸',9,16],['dota','Dota 2','5 × 5 · Captain’s Mode','27 октября · 16:00','200 000 ₸',7,12]];
+const img=id=>`https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=500&q=75`;
+const SH=[['cola','d','Coca-Cola','0,5 л · охлаждённая',650,'1613638866467-f5b589510366'],['water','d','Вода Tassay','0,5 л · без газа',350,'1622379535499-e5b991f93520'],['monster','d','Monster Energy','0,5 л · original',1200,'1622543925917-763c34d1a86e'],['rb','d','Red Bull','0,25 л · chilled',950,'1629203849746-7357277a421b'],['burger','f','Cyber Burger','Говядина · сыр · соус',2200,'1611309454921-16cef3438ee0'],['double','f','Double Frag Burger','Двойная котлета · бекон',2900,'1607730127050-e32a8c756fb9'],['fries','f','Картофель фри','Большая порция · соус',1100,'1518304256228-bb65fd3df672'],['ramen','f','Fire Ramen','Курица · яйцо · острый соус',1900,'1611280422374-fa3c1110c16e'],['combo','f','Night Combo','Бургер · фри · Cola',3200,'1495753379358-73c76ccd644b'],['cook','s','Cookies XL','Шоколадная крошка · 3 шт.',850,'1639779238456-92db5e070a03'],['mini','s','Mini Cookies','Хрустящее печенье · 150 г',700,'1613703154528-fa47dd7ffcfd'],['croc','s','Круассан','Шоколадная начинка',750,'1712566313171-943e8a1bd24a'],['nuts','s','Ореховый микс','Миндаль · кешью · 120 г',950,'1615221619383-9224628ee3c7']].map(a=>({id:a[0],c:a[1],n:a[2],m:a[3],p:a[4],im:img(a[5])}));
+const CATS=[['all','Всё'],['d','Напитки'],['f','Горячая еда'],['s','Снеки']];
+const zone=()=>Z.find(z=>z.id===st.zone);
+const me=()=>P.me&&P.users[P.me];
+const mine=()=>P.bookings.filter(b=>b.u===P.me);
+const taken=(k,t,s)=>P.bookings.some(b=>b.st==='Предстоит'&&b.k===k&&b.time===t&&b.stn===s&&b.v===st.venue);
+function busy(g,n){const id=g.x+String(n).padStart(2,'0');const h=(n*7+st.di*5+T.indexOf(st.time)*3+g.id.length+st.venue*2)%6===0&&n%3!==1;return h||taken(D[st.di].k,st.time,id)}
+function fix(){if(pastT(st.time)){const t=T.find(x=>!pastT(x));if(t)st.time=t}const g=G.find(x=>x.id===st.zone);if(busy(g,+st.stn.slice(1)))for(let n=1;n<=g.c;n++)if(!busy(g,n)){st.stn=g.x+String(n).padStart(2,'0');return}}
+const pastT=t=>st.di===0&&+t.slice(0,2)<=new Date().getHours();
+const free=()=>G.reduce((a,g)=>a+Array.from({length:g.c},(_,i)=>busy(g,i+1)?0:1).reduce((x,y)=>x+y,0),0);
+const left=()=>Math.max(0,Math.round((P.end-Date.now())/1000));
+const clk=s=>[s/3600|0,s%3600/60|0,s%60].map(v=>String(v).padStart(2,'0')).join(':');
+const q=(id,goal,prog,r,n,t,i)=>({id,goal,prog,r,n,t,i});
+const Q=()=>[q('wk',5,5,1,'Идеальные выходные','Проведи 5 часов в клубе за выходные','clock'),q('ni',15,12,3,'Ночной марафон','15 часов в клубе с 22:00 до 08:00','spark'),q('sq',3,Math.min(3,P.friends.length-1),2,'Собери команду','Пригласи трёх друзей в Pixel Point','pad'),q('ch',2,Math.min(2,1+P.tours.length),2,'Путь чемпиона','Сыграй в двух еженедельных турнирах','cup')];
+const cnt=()=>Object.values(P.cart).reduce((a,b)=>a+b,0);
+const sum=()=>SH.reduce((a,p)=>a+p.p*(P.cart[p.id]||0),0);
+
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const LN={steam:['Steam','#1b6fa8'],epic:['Epic Games','#2b2b33'],bnet:['Battle.net','#148eff'],riot:['Riot Client','#d13639'],ea:['EA App','#e8453c'],ubi:['Ubisoft Connect','#0070ff'],rock:['Rockstar Launcher','#d99a12']};
+const GN={sh:'Шутеры',mo:'MOBA и стратегии',rp:'RPG и экшен',rc:'Гонки и спорт',co:'Кооператив и выживание'};
+const GM=`Counter-Strike 2|sh|steam;Valorant|sh|riot;Apex Legends|sh|steam;Call of Duty: Warzone|sh|bnet;Overwatch 2|sh|bnet;PUBG: Battlegrounds|sh|steam;Rainbow Six Siege|sh|ubi;Battlefield 2042|sh|ea;Fortnite|sh|epic;Destiny 2|sh|steam;Dota 2|mo|steam;League of Legends|mo|riot;Teamfight Tactics|mo|riot;Heroes of the Storm|mo|bnet;StarCraft II|mo|bnet;Age of Empires IV|mo|steam;Civilization VI|mo|epic;Cyberpunk 2077|rp|steam;The Witcher 3|rp|steam;Elden Ring|rp|steam;Baldur's Gate 3|rp|steam;Diablo IV|rp|bnet;Path of Exile|rp|steam;Genshin Impact|rp|epic;Black Myth: Wukong|rp|steam;GTA V|rp|rock;Red Dead Redemption 2|rp|rock;Hogwarts Legacy|rp|epic;Skyrim|rp|steam;EA Sports FC 25|rc|ea;F1 24|rc|ea;Need for Speed Heat|rc|ea;NBA 2K25|rc|steam;Forza Horizon 5|rc|steam;Assetto Corsa|rc|steam;Rocket League|rc|epic;Rust|co|steam;Lethal Company|co|steam;Phasmophobia|co|steam;Deep Rock Galactic|co|steam;Left 4 Dead 2|co|steam;Sea of Thieves|co|steam;Palworld|co|steam;Terraria|co|steam;It Takes Two|co|ea;Among Us|co|steam`.split(';').map(x=>{const a=x.split('|');return{n:a[0],g:a[1],l:a[2]}});
+const SID={'Counter-Strike 2':730,'Apex Legends':1172470,'Call of Duty: Warzone':1938090,'Overwatch 2':2357570,'PUBG: Battlegrounds':578080,'Rainbow Six Siege':359550,'Battlefield 2042':1517290,'Destiny 2':1085660,'Dota 2':570,'Age of Empires IV':1466860,'Civilization VI':289070,'Cyberpunk 2077':1091500,'The Witcher 3':292030,'Elden Ring':1245620,"Baldur's Gate 3":1086940,'Diablo IV':2344520,'Path of Exile':238960,'Black Myth: Wukong':2358720,'GTA V':271590,'Red Dead Redemption 2':1174180,'Hogwarts Legacy':990080,'Skyrim':72850,'EA Sports FC 25':2669320,'F1 24':2488620,'Need for Speed Heat':1222680,'NBA 2K25':2878980,'Forza Horizon 5':1551360,'Assetto Corsa':244210,'Rust':252490,'Lethal Company':1966720,'Phasmophobia':739630,'Deep Rock Galactic':548430,'Left 4 Dead 2':550,'Sea of Thieves':1172620,'Palworld':1623730,'Terraria':105600,'It Takes Two':1426210,'Among Us':945360};
+const FQ=[['Как отменить бронь?','В профиле откройте «Бронирования» и нажмите «Отменить бронь». Часы, оплаченные балансом, вернутся на счёт.'],['Как можно оплатить?','Балансом часов, через Kaspi Pay, Halyk Bank, картой Visa или Mastercard, а также на стойке администратора в клубе.'],['Что делать, если нужна помощь?','Нажмите «Вызвать администратора» в правом нижнем углу — он подойдёт к вашему месту примерно через 2 минуты.'],['Можно ли заказать еду и напитки?','Да. Откройте «Магазин», добавьте позиции в корзину и закажите — всё принесут к вашему компьютеру.'],['Клуб работает ночью?','Да, Pixel Point открыт круглосуточно, без выходных.']];
+const PROMO={PIXEL10:.1,GAMER15:.15};const disc=()=>PROMO[st.pd]||0;const tot=()=>Math.round(zone().p*st.dur*(1-disc()));
+const info=()=>`<section class="sec wh" id="info"><div class="hd"><div><div class="ey" style="color:var(--vi)">Как нас найти</div><h2>Адреса и частые вопросы</h2></div></div><div class="rv"><div>${V.map(v=>`<div class="rc"><b>${v[0]}</b><p>${v[1]}, Семей · круглосуточно</p><a class="mp" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v[1]+', Семей')}">Проложить маршрут</a></div>`).join('')}</div><div>${FQ.map(f=>`<details class="fq"><summary>${f[0]}</summary><p>${f[1]}</p></details>`).join('')}</div></div></section>`;
+const pl=n=>n%10==1&&n%100!=11?'отзыв':[2,3,4].includes(n%10)&&![12,13,14].includes(n%100)?'отзыва':'отзывов';
+const stars=n=>'★'.repeat(n)+'☆'.repeat(5-n);
+const gm=()=>{const k=st.gq.trim().toLowerCase(),L=GM.filter(x=>(st.gg==='all'||x.g===st.gg)&&(!st.gl||x.l===st.gl)&&(!k||x.n.toLowerCase().includes(k)));return L.length?L.map(x=>`<div class="gc"><div class="cv" style="background:linear-gradient(135deg,${LN[x.l][1]},#17151e)">${x.n[0]}${SID[x.n]?`<img src="https://cdn.cloudflare.steamstatic.com/steam/apps/${SID[x.n]}/header.jpg" alt="${x.n}" loading="lazy" onerror="this.remove()">`:''}</div><div class="gb"><b>${x.n}</b><small>${GN[x.g]}</small><br><span class="lb" style="background:${LN[x.l][1]}">${LN[x.l][0]}</span></div></div>`).join(''):'<p class="mu">Ничего не найдено. Сбросьте фильтры или измените запрос.</p>'};
+const games=()=>`<section class="sec wh" id="games"><div class="hd"><div><div class="ey" style="color:var(--vi)">Библиотека клуба</div><h2>Игры в клубе</h2><p class="c">${GM.length} игр уже установлены и обновлены на всех компьютерах. Выберите лаунчер или жанр, чтобы найти нужную.</p></div><div class="pill" style="background:var(--dk)">${GM.length} игр · ${Object.keys(LN).length} лаунчеров</div></div>
+<div class="lns">${Object.entries(LN).map(([k,v])=>`<button class="ln ${st.gl===k?'s':''}" data-a="gl" data-v="${k}"><i style="background:${v[1]}">${v[0][0]}</i><span><b>${v[0]}</b><small>${GM.filter(x=>x.l===k).length} игр</small></span></button>`).join('')}</div>
+<div class="gt"><input class="in" data-k="gq" placeholder="Найти игру…" value="${esc(st.gq)}" aria-label="Поиск игры"><div class="cats">${[['all','Все']].concat(Object.entries(GN)).map(k=>`<button class="${st.gg===k[0]?'on':''}" data-a="gg" data-v="${k[0]}">${k[1]}</button>`).join('')}</div></div><div class="gg" id="gg">${gm()}</div></section>`;
+const reviews=()=>{const R=P.reviews,n=R.length,av=n?R.reduce((a,x)=>a+x.r,0)/n:0;
+const form=me()?`<div class="f" style="font-weight:700;margin-bottom:4px">Ваша оценка</div><div>${[1,2,3,4,5].map(i=>`<button class="sr ${st.rate>=i?'on':''}" data-a="rate" data-v="${i}" aria-label="${i} из 5">★</button>`).join('')}</div><textarea class="in" style="padding:12px;min-height:96px;margin-top:6px" data-k="rtext" placeholder="Что понравилось, что улучшить?">${esc(st.rtext)}</textarea>${st.rerr?`<div class="er">${st.rerr}</div>`:''}<button class="btn" data-a="review">Отправить отзыв</button>`:`<p class="mu">Чтобы оставить отзыв, войдите в аккаунт.</p><button class="btn" data-a="modal" data-v="prof">Войти или зарегистрироваться</button>`;
+return `<section class="sec wh" id="reviews"><div class="hd"><div><div class="ey" style="color:var(--vi)">Мнение игроков</div><h2>Отзывы о клубе</h2><p class="c">Расскажите, как прошёл ваш вечер в Pixel Point — это поможет другим выбрать место.</p></div></div><div class="rv"><div><div class="avg"><b>${av.toFixed(1)}</b><div><div class="stars">${stars(Math.round(av))}</div><small class="mu">${n} ${pl(n)}</small></div></div>${[5,4,3,2,1].map(k=>{const c=R.filter(x=>x.r===k).length;return `<div class="bar"><span>${k}</span><i><u style="width:${n?c/n*100:0}%"></u></i><span>${c}</span></div>`}).join('')}<hr style="margin:18px 0">${form}</div>
+<div>${[...R].sort((a,b)=>b.id-a.id).map(x=>`<div class="rc"><div class="top"><div><b>${esc(x.n)}</b><br><small>${x.d}</small></div><span class="stars">${stars(x.r)}</span></div><p>${esc(x.t)}</p>${x.u&&x.u===P.me?`<button data-a="delrev" data-v="${x.id}">Удалить отзыв</button>`:''}</div>`).join('')}</div></div></section>`};
+function page(){
+const z=zone(),d=D[st.di],ok=st.ok,act=left()>0;
+return `<header><div class="row"><div class="bm">${ic('pad',22)}</div><div class="bn">PIXEL<b>POINT</b></div></div>
+<nav>${[['booking','Бронирование'],['tariffs','Тарифы'],['games','Игры'],['tournaments','Турниры'],['quests','Квесты'],['services','Сервисы'],['reviews','Отзывы']].map(n=>`<button data-a="nav" data-v="${n[0]}" class="${st.nav===n[0]?'on':''}">${n[1]}</button>`).join('')}<button data-a="modal" data-v="shop">Магазин${cnt()?`<i>${cnt()}</i>`:''}</button></nav>
+<div class="row"><button class="loc row" data-a="modal" data-v="loc">${ic('loc',17)}<span>Казахстан, Семей</span>${ic('chev',15)}</button><button class="pf ${me()?'on':''}" data-a="modal" data-v="prof" aria-label="Профиль">${ic('user',19)}</button></div></header>
+<main><section class="hero"><div><div class="ey">Бронирование онлайн</div><h1>Твоя игра.<br><span>Твоё место.</span></h1><p>Выбери идеальный сетап и приходи — всё уже будет готово к победе.</p></div>
+<div class="hw"><div class="hc ${act?'act':''}"><div class="ic">${ic('mon')}</div><div><small>${act?'Сессия · '+P.sst:'Игровая сессия'}</small><b id="tm">${act?clk(left()):'Не запущена'}</b></div></div>
+<div class="hc"><div class="ic">${ic('clock',22)}</div><div><small>Работаем круглосуточно</small><b style="font-size:14px">24 / 7 · без выходных</b></div></div></div></section>
+<section class="lay" id="booking"><div class="card">
+<div class="sh"><div class="sn">01</div><div><h2>Выберите дату и время</h2><small>Можно забронировать на 14 дней вперёд</small></div></div>
+<div class="dr">${D.slice(0,5).map((x,i)=>`<button class="dc ${st.di===i?'sel':''}" data-a="date" data-v="${i}"><small>${x.day}</small><b>${x.n}</b><small>${x.m}</small></button>`).join('')}<button class="cb" data-a="modal" data-v="cal" aria-label="Календарь">${ic('cal')}</button></div>
+<div class="tr">${T.map(t=>`<button class="tc ${st.time===t?'s':''}" data-a="time" data-v="${t}" ${pastT(t)?'disabled':''}>${t}</button>`).join('')}</div><hr>
+<div class="sh" id="tariffs"><div class="sn">02</div><div><h2>Выберите игровую зону</h2><small>Конфигурации для любого уровня игры</small></div></div>
+<div class="zg">${Z.map(x=>`<button class="zc ${st.zone===x.id?'s':''}" data-a="zone" data-v="${x.id}"><span class="zi">${ic(x.i)}</span><b>${x.n}</b><span>${x.m}</span><em>от ${fmt(x.p)} <span>/ час</span></em></button>`).join('')}</div><hr>
+<div class="sh"><div class="sn">03</div><div><h2>Выберите компьютер</h2><small>Свободно ${free()} из 52 мест во всех зонах</small></div><div class="lg"><span><i></i>Свободно</span><span><i class="b"></i>Занято</span><span><i class="v"></i>Выбрано</span></div></div>
+<div class="map"><div class="scr">ПАНОРАМНОЕ ОКНО</div><div class="zs">${G.map(g=>{let f=0;const cells=Array.from({length:g.c},(_,i)=>{const n=i+1,id=g.x+String(n).padStart(2,'0'),b=busy(g,n);f+=!b;return `<button class="st ${st.stn===id?'sel':''}" ${b?'disabled':''} data-a="stn" data-v="${g.id}|${id}" aria-label="Компьютер ${id}${b?', занят':''}">${ic('mon',18)}<span>${id}</span></button>`}).join('');return `<div class="z ${g.id}"><div class="zh"><div><b>${g.t}</b>${g.m}</div><em>${f} свободно</em></div><div class="sg">${cells}</div></div>`}).join('')}</div>
+<div class="mf"><span>Вход</span><b>Стойка администратора</b><span>Бар</span></div></div><hr>
+<div class="rig"><div><div class="ey">Турнирный уровень</div><h3>Мощность без компромиссов</h3><p>Premium, VIP и Bootcamp готовы к CS2, Valorant, Dota 2, Warzone и стримингу в максимальном качестве.</p></div>
+<div class="sp"><div><b>RTX 4070 SUPER</b><span>Видеокарта</span></div><div><b>Ryzen 7 7800X3D</b><span>Процессор</span></div><div><b>32 GB DDR5</b><span>Память</span></div><div><b>360 Hz</b><span>Монитор</span></div></div></div><hr>
+<div class="sh" id="services"><div class="sn">04</div><div><h2>В клубе есть всё для игры</h2><small>Оборудование, сервис и комфорт уже включены</small></div></div>
+<div class="am">${AM.map(a=>`<div class="a"><div class="zi">${ic(a[0],21)}</div><div><b>${a[1]}</b><p>${a[2]}</p></div></div>`).join('')}</div>
+<div class="inc"><span>Также включено:</span>Механическая клавиатура · Игровая мышь · Гарнитура 7.1 · Эргономичное кресло · Личный шкафчик</div></div>
+<aside class="card sum"><div class="k">Ваше бронирование</div><h2>Почти готово</h2>
+<div class="pl"><div></div><div><b>${V[st.venue][0]}</b><small>${V[st.venue][1]}</small></div></div>
+<div class="dt"><div><span>Дата</span><b>${d.n} ${d.m}, ${d.day.toLowerCase()}</b></div><div><span>Начало</span><b>${st.time}</b></div><div><span>Зона</span><b>${z.n}</b></div><div><span>Компьютер</span><b>№ ${st.stn}</b></div></div>
+<div class="du"><div>Продолжительность<small>Минимум 1 час</small></div><div class="ct"><button data-a="dur" data-v="-1" ${st.dur===1?'disabled':''} aria-label="Меньше">${ic('minus',16)}</button><b>${st.dur} ч</b><button data-a="dur" data-v="1" ${st.dur===8?'disabled':''} aria-label="Больше">${ic('plus',16)}</button></div></div>
+<div class="tot"><div>Итого<small>${fmt(z.p)} × ${st.dur} ч${st.pd?' − '+disc()*100+'%':''}</small></div><b>${fmt(tot())}</b></div>
+<form class="ff" style="margin-top:12px" onsubmit="return false"><input class="in" data-k="pc" placeholder="Промокод" value="${esc(st.pc)}" aria-label="Промокод"><button type="button" data-a="promo">Применить</button></form>${st.pd?`<div class="ok2">Скидка ${disc()*100}% применена</div>`:''}
+<div class="pt">Способ оплаты</div><div class="pg">${PM.map(m=>`<button class="pm ${st.pay===m[0]?'s':''}" data-a="pay" data-v="${m[0]}"><span class="pk" style="background:${m[3]};${m[0]==='cash'?'color:#17151e':''}">${m[0]==='hours'?P.hours+'ч':m[2]}</span>${m[1]}</button>`).join('')}</div>
+${st.err?`<div class="er">${st.err}</div>`:''}
+<button class="btn ${ok?'ok':''}" data-a="book">${ok?'Место забронировано ✓':'Забронировать'}</button>
+${ok?`<div class="ok2">Бронь ${P.bookings[0]?.id} создана. Оплата: ${PM.find(m=>m[0]===st.pay)[1]}.</div>`:''}
+<div class="nt">Безопасная оплата · Отмена бесплатно за 2 часа</div></aside></section>
+${games()}<section class="sec dark" id="tournaments"><div class="hd"><div><div class="ey">Каждую неделю</div><h2>Турниры Pixel Point</h2><p>Собирай команду, участвуй в лигах и забирай реальные призовые.</p></div><div class="pill">${ic('cup',16)} Сезон · 2026</div></div>
+<div class="tg">${TR.map((t,i)=>{const r=P.tours.includes(t[0]);return `<div class="t"><div class="top"><b>0${i+1}</b><span>${i?'Скоро':'Регистрация открыта'}</span></div><h3>${t[1]}</h3><small>${t[2]}</small><div class="ti"><div><span>Дата</span><b>${t[3]}</b></div><div><span>Призовой фонд</span><b>${t[4]}</b></div></div><div class="tf"><span>${t[5]+(r?1:0)} / ${t[6]} команд</span><button class="tb ${r?'r':''}" data-a="tour" data-v="${t[0]}">${r?'Отменить участие':'Участвовать'}</button></div></div>`}).join('')}</div></section>
+<section class="sec qs" id="quests"><div class="qi"><div class="orb">${ic('spark',28)}</div><div class="ey" style="color:var(--vi)">Награды за игру</div><h2>Квесты клуба</h2><p>Играй, выполняй задания и получай бесплатные часы прямо на аккаунт.</p><div class="qb"><span>Часов в подарок</span><b>${P.bonus}</b></div></div>
+<div class="ql">${Q().map(x=>{const c=x.prog>=x.goal,cl=P.claimed.includes(x.id),pc=Math.round(Math.min(1,x.prog/x.goal)*100);return `<div class="q ${c?'c':''}"><div class="zi">${ic(x.i)}</div><div><div class="l"><div><b>${x.n}</b><small>${x.t}</small></div><em>+${x.r} ч</em></div><div class="pr"><i style="width:${pc}%"></i></div><div class="m"><span>${x.prog} / ${x.goal}</span><span>${pc}%</span></div></div><button class="qbt" ${cl?'disabled':''} data-a="quest" data-v="${x.id}">${cl?'Получено':c?'Забрать':'Играть'}</button></div>`}).join('')}</div></section>${reviews()}${info()}</main>
+<footer><div class="row"><div class="bm" style="width:30px;height:30px">${ic('pad',16)}</div><div class="bn">PIXEL<b>POINT</b></div></div><div>© 2026 Pixel Point · Семей, Казахстан · <button data-a="modal" data-v="adm" style="color:#ffffff90;text-decoration:underline;font-size:12px">Для администратора</button></div><div class="row"><span></span>${free()} компьютеров свободно сейчас</div></footer>
+<button class="fab" data-a="modal" data-v="admin"><span class="ic">${ic('bell',19)}</span><span><b>Вызвать администратора</b><small>Помощь за 2 минуты</small></span></button>`}
+
+function modal(){const m=st.modal;if(!m)return '';let c='',cls='';
+if(m==='loc')c=`<div class="mk">Клубы в Семее</div><h2>Выберите локацию</h2><div class="vl">${V.map((v,i)=>`<button class="v ${st.venue===i?'s':''}" data-a="venue" data-v="${i}"><span class="zi">${ic('loc',18)}</span><span><b>${v[0]}</b><small>${v[1]}</small></span><em>${v[2]}</em></button>`).join('')}</div>`;
+if(m==='cal')c=`<div class="mk">Календарь</div><h2>Выберите дату</h2><div class="cg">${D.map((x,i)=>`<button class="cd ${st.di===i?'sel':''}" data-a="date" data-v="${i}"><small>${x.day}</small><b>${x.n}</b><small>${x.m}</small></button>`).join('')}</div>`;
+if(m==='shop'){cls='x';const L=SH.filter(p=>st.cat==='all'||p.c===st.cat);
+c=`<div class="hero2"><div><div class="mk">Pixel Bar · 24/7</div><h2>Перекус прямо к месту</h2><p>Закажите еду и напитки — администратор принесёт всё к компьютеру ${st.stn}.</p></div><div class="cbg">${ic('cart',17)} ${cnt()}</div></div>
+<div class="tb2"><div class="cats">${CATS.map(k=>`<button class="${st.cat===k[0]?'on':''}" data-a="cat" data-v="${k[0]}">${k[1]}</button>`).join('')}</div><span>${L.length} товаров</span></div>
+<div class="pg2">${L.map(p=>{const n=P.cart[p.id]||0;return `<div class="p"><div class="im"><img src="${p.im}" alt="${p.n}" loading="lazy">${n?`<span class="n">${n}</span>`:''}</div><div><b>${p.n}</b><small>${p.m}</small><em>${fmt(p.p)}</em></div>${n?`<div class="pc"><button data-a="cart" data-v="${p.id}|-1" aria-label="Меньше">${ic('minus',14)}</button><span>${n}</span><button data-a="cart" data-v="${p.id}|1" aria-label="Больше">${ic('plus',14)}</button></div>`:`<button class="pa" data-a="cart" data-v="${p.id}|1">${ic('plus',15)} Добавить</button>`}</div>`}).join('')}</div>
+<div class="ck"><div><small>В корзине · ${cnt()} поз.</small><b>${fmt(sum())}</b></div><button data-a="order" ${cnt()?'':'disabled'}>Заказать к месту</button></div>${st.order?`<div class="ok3">Заказ №PB-${st.order} принят. Доставим к месту ${st.stn} примерно через 7 минут.</div>`:''}`}
+if(m==='adm'){cls='x';
+if(!st.adm)c=`<div class="mk">Служба клуба</div><h2>Панель администратора</h2><form class="fm" data-f="pin"><label><span>PIN-код</span><input class="in" name="pin" type="password" inputmode="numeric" autocomplete="off"></label>${st.aerr?`<div class="er">${st.aerr}</div>`:''}<button class="btn" style="margin:0">Войти</button></form>`;
+else{const B=P.bookings,C=P.calls,O=P.orders,oc=C.filter(x=>!x.s).length,oo=O.filter(x=>!x.s).length,rev=B.filter(b=>b.st!=='Отменено').reduce((a,b)=>a+b.total,0);
+const nm=b=>{const u=P.users[b.u];return u?esc(u.name)+' · '+esc(u.phone):'Гость'};let L;
+if(st.at==='b')L=B.map(b=>`<div class="ar"><div><b>${b.id} · ${nm(b)}</b><small>${b.date}, ${b.time} · ${b.dur} ч · ${b.zone}, компьютер ${b.stn} · ${V[b.v||0][0]}</small><small>${fmt(b.total)} · ${(PM.find(k=>k[0]===b.pay)||[0,'—'])[1]} · ${b.st}</small></div>${b.st==='Предстоит'?`<div class="row"><button class="ab" data-a="bst" data-v="${b.id}|Завершено">Завершить</button><button class="ab g" data-a="bst" data-v="${b.id}|Отменено">Отменить</button></div>`:''}</div>`);
+else if(st.at==='c')L=C.map(x=>`<div class="ar"><div><b>Место ${x.stn} · ${x.z}</b><small>${esc(x.r)}${x.note?' — '+esc(x.note):''}</small><small>${x.t}${x.s?' · выполнено':''}</small></div><button class="ab ${x.s?'g':''}" data-a="cdone" data-v="${x.id}">${x.s?'Вернуть':'Готово'}</button></div>`);
+else L=O.map(x=>`<div class="ar"><div><b>Заказ №PB-${x.num} · место ${x.stn}</b><small>${esc(x.items)}</small><small>${fmt(x.total)} · ${x.t}${x.s?' · выдано':''}</small></div><button class="ab ${x.s?'g':''}" data-a="odone" data-v="${x.id}">${x.s?'Вернуть':'Выдано'}</button></div>`);
+if(!L.length)L=['<p class="mu">Пока пусто. Новые записи появятся здесь сразу после действий гостей.</p>'];
+c=`<div class="mk">Служба клуба</div><h2>Панель администратора</h2><div class="kp"><div><b>${B.filter(b=>b.st==='Предстоит').length}</b>Активные брони</div><div><b>${fmt(rev)}</b>Сумма броней</div><div><b>${oc}</b>Новые вызовы</div><div><b>${oo}</b>Заказы в очереди</div></div><div class="tabs"><button class="${st.at==='b'?'on':''}" data-a="at" data-v="b">Брони<span>${B.length}</span></button><button class="${st.at==='c'?'on':''}" data-a="at" data-v="c">Вызовы<span>${oc}</span></button><button class="${st.at==='o'?'on':''}" data-a="at" data-v="o">Заказы бара<span>${oo}</span></button></div>${L.join('')}<button class="lo" data-a="admout">Выйти из панели</button>`}}
+if(m==='admin')c=`<div class="row"><div class="hc act" style="width:52px;height:52px;padding:0;justify-content:center;border-radius:14px;color:#17151e;background:var(--li)">${ic('bell',22)}</div><div><div class="mk">Служба поддержки</div><h2 style="margin-bottom:0">Вызвать администратора</h2></div></div>`+(st.sent?`<div style="text-align:center;padding:24px 10px 4px"><div class="pf on" style="width:56px;height:56px;margin:auto;border-radius:50%">${ic('spark',24)}</div><h3 style="margin-top:18px">Администратор уже в пути</h3><p class="mu" style="font-size:12px">Запрос отправлен с места ${st.stn}. Ожидайте примерно 2 минуты.</p><button class="btn" data-a="close">Понятно</button></div>`:`<div class="row" style="margin:20px 0 16px;padding:12px;border-radius:12px;background:var(--vs);color:var(--vi)">${ic('mon',18)}<div style="font-size:12px"><span class="mu">Ваше место</span><br><b style="color:var(--ink)">${zone().n} · компьютер ${st.stn}</b></div></div><b style="font-size:12px" class="mu">Что случилось?</b><div class="rs">${['Нужна помощь с компьютером','Проблема с периферией','Принести заказ','Вопрос по бронированию'].map(r=>`<button class="${st.reason===r?'s':''}" data-a="reason" data-v="${r}">${r}</button>`).join('')}</div><label class="fm" style="margin-top:14px"><span class="mu" style="font-size:12px;font-weight:700">Комментарий — необязательно</span><input class="in" data-k="note" placeholder="Опишите проблему подробнее" value="${st.note.replace(/"/g,'&quot;')}"></label><button class="btn" data-a="call">${ic('bell',17)} Отправить вызов</button>`);
+if(m==='prof'){const u=me();if(u){cls='w';const bk=mine();
+c=`<div class="row"><div class="pf on" style="width:52px;height:52px;background:var(--vi);color:#fff">${ic('user',26)}</div><div><div class="mk">Pixel ID</div><h2 style="margin:0">${esc(u.name)}</h2></div></div>
+<div class="tabs"><button class="${st.tab==='o'?'on':''}" data-a="tab" data-v="o">Профиль</button><button class="${st.tab==='b'?'on':''}" data-a="tab" data-v="b">Бронирования<span>${bk.length}</span></button><button class="${st.tab==='f'?'on':''}" data-a="tab" data-v="f">Друзья<span>${P.friends.length}</span></button></div>`+
+(st.tab==='o'?`<div class="wal"><div><small>Игровой баланс</small><b>${P.hours} <span style="font-size:13px;opacity:.6">часов</span></b><span style="font-size:11px;opacity:.5">Часы действуют во всех филиалах</span></div></div><button class="pkg" data-a="pack"><span><b>Пакет +10 часов</b><small>Действует 30 дней</small></span><em>8 500 ₸</em></button>
+<div class="bo"><div>Бонусный баланс<b>1 250 ₸</b></div><div>Часы в подарок<b>${P.bonus} ч</b></div><div>Уровень<b>Cyber Rookie</b></div><div>Турниры<b>${P.tours.length}</b></div></div><div class="ok2">Аккаунт подтверждён · ${u.phone}</div><button class="sb" data-a="toquests">Перейти к квестам и наградам</button><button class="lo" data-a="logout">Выйти из аккаунта</button>`:
+st.tab==='b'?`<div class="hs">${bk.length?bk.map(b=>`<div class="h"><div><b>${b.date}</b><span>${b.time} · ${b.dur} ч · ${fmt(b.total)}</span></div><div><b>${b.zone}</b><span>Компьютер ${b.stn}</span></div><em class="${b.st==='Предстоит'?'u':''}">${b.st}</em><span style="justify-self:start">${b.id}</span>${b.st==='Предстоит'?`<button data-a="cancel" data-v="${b.id}">Отменить бронь</button>`:''}</div>`).join(''):'<p class="mu">Броней пока нет. Выберите место на главной и нажмите «Забронировать».</p>'}</div>`:
+`<form class="ff" data-f="friend"><input class="in" name="l" autocomplete="off" placeholder="@логин_игрока"><button>Добавить</button></form>${st.ferr?`<div class="er">${st.ferr}</div>`:''}<div class="mu" style="margin:16px 0 0;font-size:12px;font-weight:800">Мои друзья · ${P.friends.length}</div>${P.friends.map(f=>`<div class="fr"><div class="zi">${f.l.slice(0,2).toUpperCase()}</div><div><b>@${esc(f.l)}</b><small class="${f.o?'o':''}">${f.s}</small></div><button data-a="unfriend" data-v="${f.l}">Удалить</button></div>`).join('')}`)}
+else c=`<div class="row"><div class="pf on" style="width:52px;height:52px;background:var(--vi);color:#fff">${ic('user',26)}</div><div><div class="mk">Pixel ID</div><h2 style="margin:0">Аккаунт игрока</h2></div></div>
+<div class="tabs"><button class="${st.auth==='login'?'on':''}" data-a="auth" data-v="login">Вход</button><button class="${st.auth==='reg'?'on':''}" data-a="auth" data-v="reg">Регистрация</button></div>
+<form class="fm" data-f="auth">${st.auth==='reg'?'<label><span>Ваше имя</span><input class="in" name="name" placeholder="Например, Данияр"></label>':''}<label><span>Номер телефона</span><input class="in" name="phone" inputmode="tel" placeholder="+7 777 123 45 67"></label><label><span>Пароль</span><input class="in" name="pw" type="password" placeholder="Минимум 6 символов"></label>${st.aerr?`<div class="er">${st.aerr}</div>`:''}<button class="btn" style="margin:0">${st.auth==='login'?'Войти в аккаунт':'Создать аккаунт'}</button></form>`}
+return `<div class="bd" data-a="close"><div class="md ${cls}" role="dialog" aria-modal="true"><button class="x0" data-a="close" aria-label="Закрыть">×</button>${c}</div></div>`}
+
+function render(){const y=scrollY;document.body.style.overflow=st.modal?'hidden':'';$('#app').innerHTML=page()+modal();scrollTo(0,y);save()}
+const mark=v=>{st.nav=v;document.querySelectorAll('nav button[data-a=nav]').forEach(b=>b.classList.toggle('on',b.dataset.v===v))};
+const A={
+at(v){st.at=v},admout(){st.adm=0;st.modal=null},
+bst(v){const[i,x]=v.split('|'),b=P.bookings.find(k=>k.id===i);if(b){b.st=x;if(x==='Отменено'&&b.pay==='hours')P.hours+=b.dur}},
+cdone(v){const c=P.calls.find(k=>String(k.id)===v);if(c)c.s=c.s?0:1},odone(v){const o=P.orders.find(k=>String(k.id)===v);if(o)o.s=o.s?0:1},
+gg(v){st.gg=v},promo(){const c=st.pc.trim().toUpperCase();st.ok=0;if(PROMO[c]){st.pd=c;st.err=''}else{st.pd='';st.err=c?'Такого промокода нет. Проверьте написание.':'Введите промокод'}},gl(v){st.gl=st.gl===v?'':v},rate(v){st.rate=+v;st.rerr=''},
+review(){if(!me()){st.modal='prof';st.aerr='Войдите, чтобы оставить отзыв';return}
+const t=st.rtext.trim();if(!st.rate)return void(st.rerr='Поставьте оценку от 1 до 5');if(t.length<10)return void(st.rerr='Напишите отзыв минимум из 10 символов');
+P.reviews.push({id:Date.now(),n:me().name,r:st.rate,t,d:new Date().toLocaleDateString('ru'),u:P.me});st.rate=0;st.rtext='';st.rerr=''},
+delrev(v){P.reviews=P.reviews.filter(x=>String(x.id)!==v)},
+nav(v){mark(v);document.getElementById(v)?.scrollIntoView({behavior:'smooth'});return 1},
+modal(v){st.modal=v;st.order=0;st.sent=0;st.err='';st.aerr=''},close(){st.modal=null},
+date(v){st.di=+v;st.ok=0;st.modal=null;fix()},time(v){st.time=v;st.ok=0;fix()},
+zone(v){st.zone=v;st.stn=DEF[v];st.ok=0;fix()},stn(v){const[a,b]=v.split('|');st.zone=a;st.stn=b;st.ok=0},
+dur(v){st.dur=Math.min(8,Math.max(1,st.dur+ +v));st.ok=0},pay(v){st.pay=v;st.ok=0;st.err=''},venue(v){st.venue=+v;st.ok=0;st.modal=null;fix()},
+book(){if(st.ok)return;if(!me()){st.modal='prof';st.auth='login';st.aerr='Войдите или зарегистрируйтесь, чтобы забронировать место';return}
+if(pastT(st.time)){st.err='Это время уже прошло — выберите другое время или дату.';return}
+const z=zone();if(st.pay==='hours'&&P.hours<st.dur){st.err='На балансе недостаточно часов. Пополните пакет в профиле.';return}
+if(st.pay==='hours')P.hours-=st.dur;const d=D[st.di];
+P.bookings.unshift({id:'PP-'+(5000+P.bookings.length),u:P.me,k:d.k,date:d.full,time:st.time,zone:z.n,stn:st.stn,dur:st.dur,total:tot(),pay:st.pay,v:st.venue,st:'Предстоит'});
+if(st.di===0){P.end=Date.now()+st.dur*36e5;P.sst=st.stn}st.err='';st.ok=1;fix()},
+tour(v){P.tours=P.tours.includes(v)?P.tours.filter(x=>x!==v):[...P.tours,v]},
+quest(v){const x=Q().find(k=>k.id===v);if(x.prog<x.goal){document.getElementById('booking').scrollIntoView({behavior:'smooth'});return 1}
+if(!me()){st.modal='prof';st.aerr='Войдите, чтобы получить награду';return}if(!P.claimed.includes(v)){P.claimed.push(v);P.bonus+=x.r;P.hours+=x.r}},
+cat(v){st.cat=v},cart(v){const[i,n]=v.split('|');const c=Math.max(0,(P.cart[i]||0)+ +n);c?P.cart[i]=c:delete P.cart[i];st.order=0},
+order(){st.order=340+cnt();P.orders.unshift({id:Date.now(),num:st.order,stn:st.stn,t:hm(),total:sum(),items:SH.filter(p=>P.cart[p.id]).map(p=>p.n+' ×'+P.cart[p.id]).join(', '),s:0});P.cart={}},reason(v){st.reason=v},call(){P.calls.unshift({id:Date.now(),stn:st.stn,z:zone().n,r:st.reason,note:st.note.trim(),t:hm(),s:0});st.sent=1;st.note=''},
+tab(v){st.tab=v},auth(v){st.auth=v;st.aerr=''},pack(){P.hours+=10},logout(){P.me=null;st.tab='o'},
+toquests(){st.modal=null;setTimeout(()=>A.nav('quests'))},
+cancel(v){const b=P.bookings.find(x=>x.id===v);if(b){b.st='Отменено';if(b.pay==='hours')P.hours+=b.dur}},
+unfriend(v){P.friends=P.friends.filter(f=>f.l!==v)}};
+document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!el)return;if(el.classList.contains('bd')&&e.target!==el)return;
+const r=A[el.dataset.a](el.dataset.v);if(r===1)save();else render()});
+document.addEventListener('input',e=>{if(e.target.dataset.k){st[e.target.dataset.k]=e.target.value;if(e.target.dataset.k==='gq')$('#gg').innerHTML=gm()}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&st.modal){st.modal=null;render()}});
+document.addEventListener('submit',e=>{e.preventDefault();const f=e.target,v=Object.fromEntries(new FormData(f)),t=f.dataset.f;
+if(t==='friend'){const l=(v.l||'').trim().replace(/^@/,'');if(l.length<3)st.ferr='Введите логин минимум из трёх символов';else if(P.friends.some(x=>x.l.toLowerCase()===l.toLowerCase()))st.ferr='Этот игрок уже у вас в друзьях';else{P.friends.unshift({l,s:'Заявка отправлена',o:0});st.ferr=''}}
+if(t==='auth'){const ph=(v.phone||'').replace(/\D/g,''),reg=st.auth==='reg';
+if(reg&&(v.name||'').trim().length<2)st.aerr='Укажите имя минимум из двух символов';
+else if(ph.length<10)st.aerr='Введите корректный номер телефона';
+else if((v.pw||'').length<6)st.aerr='Пароль должен содержать минимум 6 символов';
+else if(reg&&P.users[ph])st.aerr='Этот номер уже зарегистрирован — войдите';
+else if(!reg&&!P.users[ph])st.aerr='Аккаунт не найден — сначала зарегистрируйтесь';
+else if(!reg&&P.users[ph].pw!==v.pw)st.aerr='Неверный пароль';
+else{if(reg)P.users[ph]={name:v.name.trim(),phone:v.phone.trim(),pw:v.pw};P.me=ph;st.aerr='';st.tab='o'}}
+if(t==='pin'){if(v.pin===ADMIN_PIN){st.adm=1;st.aerr=''}else st.aerr='Неверный PIN-код'}
+render()});
+addEventListener('storage',e=>{if(e.key==='pp'){try{P={...P0,...JSON.parse(e.newValue||'{}')};render()}catch{}}});
+setInterval(()=>{const t=$('#tm');if(!t)return;const s=left();if(s>0)t.textContent=clk(s);else if(t.textContent!=='Не запущена')render()},1000);
+addEventListener('scroll',()=>{let c='booking';for(const id of['booking','tariffs','services','games','tournaments','quests','reviews']){const e=document.getElementById(id);if(e&&e.getBoundingClientRect().top<220)c=id}if(c!==st.nav)mark(c)},{passive:true});
+if(location.hash==='#admin')st.modal='adm';
+fix();render();
+</script>
+</body>
+</html>
