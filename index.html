@@ -6,6 +6,7 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E🎮%3C/text%3E%3C/svg%3E">
 <meta name="description" content="Pixel Point — компьютерный клуб в Семее: онлайн-бронирование мест, игры, турниры, бар 24/7.">
 <meta name="theme-color" content="#17151e">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <title>PixelPoint — Компьютерный клуб</title>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 <style>
@@ -169,10 +170,28 @@ footer .row span{width:8px;height:8px;border-radius:50%;background:var(--li);box
 const $=s=>document.querySelector(s),fmt=n=>n.toLocaleString('ru-RU')+' ₸';
 const P0={users:{},me:null,bookings:[],hours:12,bonus:0,friends:[{l:'nurik_cs',s:'В игре · CS2',o:1},{l:'aika.gg',s:'Онлайн',o:1},{l:'semey_wolf',s:'Был 2 часа назад',o:0}],tours:[],claimed:[],cart:{},calls:[],orders:[],reviews:[{id:1,n:'Данияр',r:5,t:'Premium-зал огонь: 240 Гц и тишина, пинг в CS2 стабильный. Персонал быстрый.',d:'12.09.2026'},{id:2,n:'Аружан',r:5,t:'Приходим командой на буткемп. Удобно, что всё бронируется онлайн.',d:'14.09.2026'},{id:3,n:'Ерлан',r:4,t:'Отличные компьютеры и кресла. В выходные вечером многолюдно, лучше бронировать заранее.',d:'18.09.2026'},{id:4,n:'Мадина',r:5,t:'Люблю ночные сеты: бар работает круглосуточно и заказ приносят прямо к месту.',d:'21.09.2026'},{id:5,n:'Тимур',r:4,t:'Большая библиотека игр, всё установлено и обновлено. Хотелось бы больше турниров по Dota.',d:'25.09.2026'}],end:0,sst:''};
 let P;try{P={...P0,...JSON.parse(localStorage.getItem('pp')||'{}')}}catch{P=P0}
+const sb=window.supabase?supabase.createClient('https://zrcqfwdrcndpkbsrzivl.supabase.co','sb_publishable_iw_t_j1Hj4GceuIqyc9V0g_vBzxzszf'):null;
+const ph2e=p=>'p'+p.replace(/\D/g,'').replace(/^8(?=\d{10}$)/,'7')+'@pixelpoint.club';
+const tm=x=>new Date(x).toLocaleString('ru',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+const mb=b=>({id:'PP-'+b.id,date:b.date_label,time:b.time,zone:b.zone,stn:b.station,dur:b.duration,total:b.total,pay:b.pay,v:b.venue,st:b.status,u:b.profiles});
+async function loadAdmin(){if(!sb)return;const[b,c,o]=await Promise.all([sb.from('bookings').select('*, profiles(name,phone)').order('created_at',{ascending:false}),sb.from('calls').select('*').order('created_at',{ascending:false}),sb.from('orders').select('*').order('created_at',{ascending:false})]);
+st.ad={b:(b.data||[]).map(mb),c:(c.data||[]).map(x=>({id:x.id,stn:x.station,z:x.zone,r:x.reason,note:x.note,t:tm(x.created_at),s:x.done?1:0})),o:(o.data||[]).map(x=>({id:x.id,num:x.id,stn:x.station,items:x.items,total:x.total,t:tm(x.created_at),s:x.done?1:0}))}}
+async function loadProfile(){if(!sb)return;const{data:{session}}=await sb.auth.getSession();if(!session){st.prof=null;st.bk=[];st.isA=0;return}
+const id=session.user.id,{data:p}=await sb.from('profiles').select('*').eq('id',id).maybeSingle();st.prof=p||{id,name:'Игрок',phone:''};
+const b=await sb.from('bookings').select('*').eq('user_id',id).order('created_at',{ascending:false});st.bk=(b.data||[]).map(mb);
+const a=await sb.rpc('is_admin');st.isA=!!a.data;if(st.isA)await loadAdmin()}
+async function loadTaken(){if(!sb)return;const{data}=await sb.rpc('taken',{p_k:D[st.di].k,p_time:st.time,p_venue:st.venue});st.tk=data||[];fix()}
+async function loadReviews(){if(!sb)return;const{data}=await sb.from('reviews').select('*').order('created_at',{ascending:false});st.rv=(data||[]).map(x=>({id:x.id,n:x.name,r:x.rating,t:x.text,d:new Date(x.created_at).toLocaleDateString('ru'),u:x.user_id}))}
+async function doAuth(reg,ph,v){const email=ph2e(ph);
+if(reg){const{data,error}=await sb.auth.signUp({email,password:v.pw});if(error){st.aerr=/registered/i.test(error.message)?'Этот номер уже зарегистрирован — войдите':'Ошибка регистрации: '+error.message;return}
+if(!data.session){st.aerr='В Supabase отключите Confirm email (Authentication → Sign In / Providers → Email).';return}
+await sb.from('profiles').insert({id:data.user.id,name:v.name.trim(),phone:v.phone.trim()})}
+else{const{error}=await sb.auth.signInWithPassword({email,password:v.pw});if(error){st.aerr='Неверный номер или пароль';return}}
+await loadProfile();st.aerr='';st.tab='o'}
 const ADMIN_PIN='2026';
 const save=()=>{const j=JSON.stringify(P);if(localStorage.getItem('pp')!==j)localStorage.setItem('pp',j)};
 const hm=()=>new Date().toLocaleString('ru',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
-const st={di:0,time:'20:00',zone:'premium',stn:'P06',dur:3,pay:'kaspi',venue:0,modal:null,tab:'o',auth:'login',cat:'all',err:'',nav:'booking',adm:0,at:'b',pc:'',pd:'',gg:'all',gl:'',gq:'',rate:0,rtext:'',rerr:'',ok:0,reason:'Нужна помощь с компьютером',note:'',sent:0,ferr:'',aerr:'',order:0};
+const st={di:0,time:'20:00',zone:'premium',stn:'P06',dur:3,pay:'kaspi',venue:0,modal:null,tab:'o',auth:'login',cat:'all',err:'',nav:'booking',prof:null,bk:[],tk:[],rv:[],isA:0,ad:{b:[],c:[],o:[]},lastId:0,adm:0,at:'b',pc:'',pd:'',gg:'all',gl:'',gq:'',rate:0,rtext:'',rerr:'',ok:0,reason:'Нужна помощь с компьютером',note:'',sent:0,ferr:'',aerr:'',order:0};
 const I={cal:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/>',cart:'<path d="M3 4h2l2.2 10.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L20 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="17" cy="20" r="1"/>',chev:'<path d="m9 18 6-6-6-6"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',coffee:'<path d="M4 9h13v5a6 6 0 0 1-6 6h-1a6 6 0 0 1-6-6V9Z"/><path d="M17 11h1a3 3 0 0 1 0 6h-2M7 4c0 1 1 1.5 1 2.5M12 4c0 1 1 1.5 1 2.5"/>',pad:'<path d="M7 7h10a5 5 0 0 1 4.6 7l-1.1 2.7a2.5 2.5 0 0 1-4 1l-1.6-1.4H9.1l-1.6 1.4a2.5 2.5 0 0 1-4-1L2.4 14A5 5 0 0 1 7 7Z"/><path d="M7 10v4M5 12h4M16 11h.01M18 13h.01"/>',head:'<path d="M4 14v-2a8 8 0 0 1 16 0v2"/><path d="M6 13H5a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h2v-7ZM18 13h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-2v-7Z"/>',loc:'<path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/>',minus:'<path d="M5 12h14"/>',mon:'<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>',plus:'<path d="M12 5v14M5 12h14"/>',spark:'<path d="m12 2 1.5 5.5L19 9l-5.5 1.5L12 16l-1.5-5.5L5 9l5.5-1.5L12 2Z"/>',cup:'<path d="M8 4h8v4a4 4 0 0 1-8 0V4ZM10 12v4M14 12v4M8 20h8M10 16h4"/><path d="M8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',wifi:'<path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19" r="1"/>',bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/>'};
 const ic=(n,s=20)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${I[n]}</svg>`;
 const D=Array.from({length:14},(_,i)=>{const d=new Date();d.setDate(d.getDate()+i);const f=d.toLocaleDateString('ru',{day:'numeric',month:'long'}).split(' ');return{k:d.toDateString(),day:i?d.toLocaleDateString('ru',{weekday:'short'}).replace(/^./,c=>c.toUpperCase()):'Сегодня',n:f[0],m:f[1],full:d.toLocaleDateString('ru',{day:'numeric',month:'long',year:'numeric'})}});
@@ -188,10 +207,10 @@ const img=id=>`https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=50
 const SH=[['cola','d','Coca-Cola','0,5 л · охлаждённая',650,'1613638866467-f5b589510366'],['water','d','Вода Tassay','0,5 л · без газа',350,'1622379535499-e5b991f93520'],['monster','d','Monster Energy','0,5 л · original',1200,'1622543925917-763c34d1a86e'],['rb','d','Red Bull','0,25 л · chilled',950,'1629203849746-7357277a421b'],['burger','f','Cyber Burger','Говядина · сыр · соус',2200,'1611309454921-16cef3438ee0'],['double','f','Double Frag Burger','Двойная котлета · бекон',2900,'1607730127050-e32a8c756fb9'],['fries','f','Картофель фри','Большая порция · соус',1100,'1518304256228-bb65fd3df672'],['ramen','f','Fire Ramen','Курица · яйцо · острый соус',1900,'1611280422374-fa3c1110c16e'],['combo','f','Night Combo','Бургер · фри · Cola',3200,'1495753379358-73c76ccd644b'],['cook','s','Cookies XL','Шоколадная крошка · 3 шт.',850,'1639779238456-92db5e070a03'],['mini','s','Mini Cookies','Хрустящее печенье · 150 г',700,'1613703154528-fa47dd7ffcfd'],['croc','s','Круассан','Шоколадная начинка',750,'1712566313171-943e8a1bd24a'],['nuts','s','Ореховый микс','Миндаль · кешью · 120 г',950,'1615221619383-9224628ee3c7']].map(a=>({id:a[0],c:a[1],n:a[2],m:a[3],p:a[4],im:img(a[5])}));
 const CATS=[['all','Всё'],['d','Напитки'],['f','Горячая еда'],['s','Снеки']];
 const zone=()=>Z.find(z=>z.id===st.zone);
-const me=()=>P.me&&P.users[P.me];
-const mine=()=>P.bookings.filter(b=>b.u===P.me);
+const me=()=>st.prof;
+const mine=()=>st.bk;
 const taken=(k,t,s)=>P.bookings.some(b=>b.st==='Предстоит'&&b.k===k&&b.time===t&&b.stn===s&&b.v===st.venue);
-function busy(g,n){const id=g.x+String(n).padStart(2,'0');const h=(n*7+st.di*5+T.indexOf(st.time)*3+g.id.length+st.venue*2)%6===0&&n%3!==1;return h||taken(D[st.di].k,st.time,id)}
+function busy(g,n){return st.tk.includes(g.x+String(n).padStart(2,'0'))}
 function fix(){if(pastT(st.time)){const t=T.find(x=>!pastT(x));if(t)st.time=t}const g=G.find(x=>x.id===st.zone);if(busy(g,+st.stn.slice(1)))for(let n=1;n<=g.c;n++)if(!busy(g,n)){st.stn=g.x+String(n).padStart(2,'0');return}}
 const pastT=t=>st.di===0&&+t.slice(0,2)<=new Date().getHours();
 const free=()=>G.reduce((a,g)=>a+Array.from({length:g.c},(_,i)=>busy(g,i+1)?0:1).reduce((x,y)=>x+y,0),0);
@@ -216,10 +235,10 @@ const gm=()=>{const k=st.gq.trim().toLowerCase(),L=GM.filter(x=>(st.gg==='all'||
 const games=()=>`<section class="sec wh" id="games"><div class="hd"><div><div class="ey" style="color:var(--vi)">Библиотека клуба</div><h2>Игры в клубе</h2><p class="c">${GM.length} игр уже установлены и обновлены на всех компьютерах. Выберите лаунчер или жанр, чтобы найти нужную.</p></div><div class="pill" style="background:var(--dk)">${GM.length} игр · ${Object.keys(LN).length} лаунчеров</div></div>
 <div class="lns">${Object.entries(LN).map(([k,v])=>`<button class="ln ${st.gl===k?'s':''}" data-a="gl" data-v="${k}"><i style="background:${v[1]}">${v[0][0]}</i><span><b>${v[0]}</b><small>${GM.filter(x=>x.l===k).length} игр</small></span></button>`).join('')}</div>
 <div class="gt"><input class="in" data-k="gq" placeholder="Найти игру…" value="${esc(st.gq)}" aria-label="Поиск игры"><div class="cats">${[['all','Все']].concat(Object.entries(GN)).map(k=>`<button class="${st.gg===k[0]?'on':''}" data-a="gg" data-v="${k[0]}">${k[1]}</button>`).join('')}</div></div><div class="gg" id="gg">${gm()}</div></section>`;
-const reviews=()=>{const R=P.reviews,n=R.length,av=n?R.reduce((a,x)=>a+x.r,0)/n:0;
+const reviews=()=>{const R=st.rv,n=R.length,av=n?R.reduce((a,x)=>a+x.r,0)/n:0;
 const form=me()?`<div class="f" style="font-weight:700;margin-bottom:4px">Ваша оценка</div><div>${[1,2,3,4,5].map(i=>`<button class="sr ${st.rate>=i?'on':''}" data-a="rate" data-v="${i}" aria-label="${i} из 5">★</button>`).join('')}</div><textarea class="in" style="padding:12px;min-height:96px;margin-top:6px" data-k="rtext" placeholder="Что понравилось, что улучшить?">${esc(st.rtext)}</textarea>${st.rerr?`<div class="er">${st.rerr}</div>`:''}<button class="btn" data-a="review">Отправить отзыв</button>`:`<p class="mu">Чтобы оставить отзыв, войдите в аккаунт.</p><button class="btn" data-a="modal" data-v="prof">Войти или зарегистрироваться</button>`;
 return `<section class="sec wh" id="reviews"><div class="hd"><div><div class="ey" style="color:var(--vi)">Мнение игроков</div><h2>Отзывы о клубе</h2><p class="c">Расскажите, как прошёл ваш вечер в Pixel Point — это поможет другим выбрать место.</p></div></div><div class="rv"><div><div class="avg"><b>${av.toFixed(1)}</b><div><div class="stars">${stars(Math.round(av))}</div><small class="mu">${n} ${pl(n)}</small></div></div>${[5,4,3,2,1].map(k=>{const c=R.filter(x=>x.r===k).length;return `<div class="bar"><span>${k}</span><i><u style="width:${n?c/n*100:0}%"></u></i><span>${c}</span></div>`}).join('')}<hr style="margin:18px 0">${form}</div>
-<div>${[...R].sort((a,b)=>b.id-a.id).map(x=>`<div class="rc"><div class="top"><div><b>${esc(x.n)}</b><br><small>${x.d}</small></div><span class="stars">${stars(x.r)}</span></div><p>${esc(x.t)}</p>${x.u&&x.u===P.me?`<button data-a="delrev" data-v="${x.id}">Удалить отзыв</button>`:''}</div>`).join('')}</div></div></section>`};
+<div>${!n?'<p class="mu">Отзывов пока нет. Станьте первым!</p>':''}${[...R].sort((a,b)=>b.id-a.id).map(x=>`<div class="rc"><div class="top"><div><b>${esc(x.n)}</b><br><small>${x.d}</small></div><span class="stars">${stars(x.r)}</span></div><p>${esc(x.t)}</p>${x.u&&st.prof&&x.u===st.prof.id?`<button data-a="delrev" data-v="${x.id}">Удалить отзыв</button>`:''}</div>`).join('')}</div></div></section>`};
 function page(){
 const z=zone(),d=D[st.di],ok=st.ok,act=left()>0;
 return `<header><div class="row"><div class="bm">${ic('pad',22)}</div><div class="bn">PIXEL<b>POINT</b></div></div>
@@ -251,7 +270,7 @@ return `<header><div class="row"><div class="bm">${ic('pad',22)}</div><div class
 <div class="pt">Способ оплаты</div><div class="pg">${PM.map(m=>`<button class="pm ${st.pay===m[0]?'s':''}" data-a="pay" data-v="${m[0]}"><span class="pk" style="background:${m[3]};${m[0]==='cash'?'color:#17151e':''}">${m[0]==='hours'?P.hours+'ч':m[2]}</span>${m[1]}</button>`).join('')}</div>
 ${st.err?`<div class="er">${st.err}</div>`:''}
 <button class="btn ${ok?'ok':''}" data-a="book">${ok?'Место забронировано ✓':'Забронировать'}</button>
-${ok?`<div class="ok2">Бронь ${P.bookings[0]?.id} создана. Оплата: ${PM.find(m=>m[0]===st.pay)[1]}.</div>`:''}
+${ok?`<div class="ok2">Бронь PP-${st.lastId} создана. Оплата: ${PM.find(m=>m[0]===st.pay)[1]}.</div>`:''}
 <div class="nt">Безопасная оплата · Отмена бесплатно за 2 часа</div></aside></section>
 ${games()}<section class="sec dark" id="tournaments"><div class="hd"><div><div class="ey">Каждую неделю</div><h2>Турниры Pixel Point</h2><p>Собирай команду, участвуй в лигах и забирай реальные призовые.</p></div><div class="pill">${ic('cup',16)} Сезон · 2026</div></div>
 <div class="tg">${TR.map((t,i)=>{const r=P.tours.includes(t[0]);return `<div class="t"><div class="top"><b>0${i+1}</b><span>${i?'Скоро':'Регистрация открыта'}</span></div><h3>${t[1]}</h3><small>${t[2]}</small><div class="ti"><div><span>Дата</span><b>${t[3]}</b></div><div><span>Призовой фонд</span><b>${t[4]}</b></div></div><div class="tf"><span>${t[5]+(r?1:0)} / ${t[6]} команд</span><button class="tb ${r?'r':''}" data-a="tour" data-v="${t[0]}">${r?'Отменить участие':'Участвовать'}</button></div></div>`}).join('')}</div></section>
@@ -267,17 +286,17 @@ if(m==='shop'){cls='x';const L=SH.filter(p=>st.cat==='all'||p.c===st.cat);
 c=`<div class="hero2"><div><div class="mk">Pixel Bar · 24/7</div><h2>Перекус прямо к месту</h2><p>Закажите еду и напитки — администратор принесёт всё к компьютеру ${st.stn}.</p></div><div class="cbg">${ic('cart',17)} ${cnt()}</div></div>
 <div class="tb2"><div class="cats">${CATS.map(k=>`<button class="${st.cat===k[0]?'on':''}" data-a="cat" data-v="${k[0]}">${k[1]}</button>`).join('')}</div><span>${L.length} товаров</span></div>
 <div class="pg2">${L.map(p=>{const n=P.cart[p.id]||0;return `<div class="p"><div class="im"><img src="${p.im}" alt="${p.n}" loading="lazy">${n?`<span class="n">${n}</span>`:''}</div><div><b>${p.n}</b><small>${p.m}</small><em>${fmt(p.p)}</em></div>${n?`<div class="pc"><button data-a="cart" data-v="${p.id}|-1" aria-label="Меньше">${ic('minus',14)}</button><span>${n}</span><button data-a="cart" data-v="${p.id}|1" aria-label="Больше">${ic('plus',14)}</button></div>`:`<button class="pa" data-a="cart" data-v="${p.id}|1">${ic('plus',15)} Добавить</button>`}</div>`}).join('')}</div>
-<div class="ck"><div><small>В корзине · ${cnt()} поз.</small><b>${fmt(sum())}</b></div><button data-a="order" ${cnt()?'':'disabled'}>Заказать к месту</button></div>${st.order?`<div class="ok3">Заказ №PB-${st.order} принят. Доставим к месту ${st.stn} примерно через 7 минут.</div>`:''}`}
+<div class="ck"><div><small>В корзине · ${cnt()} поз.</small><b>${fmt(sum())}</b></div><button data-a="order" ${cnt()?'':'disabled'}>Заказать к месту</button></div>${st.err?`<div class="er">${st.err}</div>`:''}${st.order?`<div class="ok3">Заказ №PB-${st.order} принят. Доставим к месту ${st.stn} примерно через 7 минут.</div>`:''}`}
 if(m==='adm'){cls='x';
-if(!st.adm)c=`<div class="mk">Служба клуба</div><h2>Панель администратора</h2><form class="fm" data-f="pin"><label><span>PIN-код</span><input class="in" name="pin" type="password" inputmode="numeric" autocomplete="off"></label>${st.aerr?`<div class="er">${st.aerr}</div>`:''}<button class="btn" style="margin:0">Войти</button></form>`;
-else{const B=P.bookings,C=P.calls,O=P.orders,oc=C.filter(x=>!x.s).length,oo=O.filter(x=>!x.s).length,rev=B.filter(b=>b.st!=='Отменено').reduce((a,b)=>a+b.total,0);
-const nm=b=>{const u=P.users[b.u];return u?esc(u.name)+' · '+esc(u.phone):'Гость'};let L;
+if(!st.isA)c=`<div class="mk">Служба клуба</div><h2>Панель администратора</h2><p class="mu">${me()?'У этого аккаунта нет прав администратора.':'Войдите в аккаунт администратора, чтобы открыть панель.'}</p>${me()?'':'<button class="btn" data-a="modal" data-v="prof">Войти</button>'}`;
+else{const B=st.ad.b,C=st.ad.c,O=st.ad.o,oc=C.filter(x=>!x.s).length,oo=O.filter(x=>!x.s).length,rev=B.filter(b=>b.st!=='Отменено').reduce((a,b)=>a+b.total,0);
+const nm=b=>{const u=b.u;return u?esc(u.name)+' · '+esc(u.phone):'Гость'};let L;
 if(st.at==='b')L=B.map(b=>`<div class="ar"><div><b>${b.id} · ${nm(b)}</b><small>${b.date}, ${b.time} · ${b.dur} ч · ${b.zone}, компьютер ${b.stn} · ${V[b.v||0][0]}</small><small>${fmt(b.total)} · ${(PM.find(k=>k[0]===b.pay)||[0,'—'])[1]} · ${b.st}</small></div>${b.st==='Предстоит'?`<div class="row"><button class="ab" data-a="bst" data-v="${b.id}|Завершено">Завершить</button><button class="ab g" data-a="bst" data-v="${b.id}|Отменено">Отменить</button></div>`:''}</div>`);
 else if(st.at==='c')L=C.map(x=>`<div class="ar"><div><b>Место ${x.stn} · ${x.z}</b><small>${esc(x.r)}${x.note?' — '+esc(x.note):''}</small><small>${x.t}${x.s?' · выполнено':''}</small></div><button class="ab ${x.s?'g':''}" data-a="cdone" data-v="${x.id}">${x.s?'Вернуть':'Готово'}</button></div>`);
 else L=O.map(x=>`<div class="ar"><div><b>Заказ №PB-${x.num} · место ${x.stn}</b><small>${esc(x.items)}</small><small>${fmt(x.total)} · ${x.t}${x.s?' · выдано':''}</small></div><button class="ab ${x.s?'g':''}" data-a="odone" data-v="${x.id}">${x.s?'Вернуть':'Выдано'}</button></div>`);
 if(!L.length)L=['<p class="mu">Пока пусто. Новые записи появятся здесь сразу после действий гостей.</p>'];
 c=`<div class="mk">Служба клуба</div><h2>Панель администратора</h2><div class="kp"><div><b>${B.filter(b=>b.st==='Предстоит').length}</b>Активные брони</div><div><b>${fmt(rev)}</b>Сумма броней</div><div><b>${oc}</b>Новые вызовы</div><div><b>${oo}</b>Заказы в очереди</div></div><div class="tabs"><button class="${st.at==='b'?'on':''}" data-a="at" data-v="b">Брони<span>${B.length}</span></button><button class="${st.at==='c'?'on':''}" data-a="at" data-v="c">Вызовы<span>${oc}</span></button><button class="${st.at==='o'?'on':''}" data-a="at" data-v="o">Заказы бара<span>${oo}</span></button></div>${L.join('')}<button class="lo" data-a="admout">Выйти из панели</button>`}}
-if(m==='admin')c=`<div class="row"><div class="hc act" style="width:52px;height:52px;padding:0;justify-content:center;border-radius:14px;color:#17151e;background:var(--li)">${ic('bell',22)}</div><div><div class="mk">Служба поддержки</div><h2 style="margin-bottom:0">Вызвать администратора</h2></div></div>`+(st.sent?`<div style="text-align:center;padding:24px 10px 4px"><div class="pf on" style="width:56px;height:56px;margin:auto;border-radius:50%">${ic('spark',24)}</div><h3 style="margin-top:18px">Администратор уже в пути</h3><p class="mu" style="font-size:12px">Запрос отправлен с места ${st.stn}. Ожидайте примерно 2 минуты.</p><button class="btn" data-a="close">Понятно</button></div>`:`<div class="row" style="margin:20px 0 16px;padding:12px;border-radius:12px;background:var(--vs);color:var(--vi)">${ic('mon',18)}<div style="font-size:12px"><span class="mu">Ваше место</span><br><b style="color:var(--ink)">${zone().n} · компьютер ${st.stn}</b></div></div><b style="font-size:12px" class="mu">Что случилось?</b><div class="rs">${['Нужна помощь с компьютером','Проблема с периферией','Принести заказ','Вопрос по бронированию'].map(r=>`<button class="${st.reason===r?'s':''}" data-a="reason" data-v="${r}">${r}</button>`).join('')}</div><label class="fm" style="margin-top:14px"><span class="mu" style="font-size:12px;font-weight:700">Комментарий — необязательно</span><input class="in" data-k="note" placeholder="Опишите проблему подробнее" value="${st.note.replace(/"/g,'&quot;')}"></label><button class="btn" data-a="call">${ic('bell',17)} Отправить вызов</button>`);
+if(m==='admin')c=`<div class="row"><div class="hc act" style="width:52px;height:52px;padding:0;justify-content:center;border-radius:14px;color:#17151e;background:var(--li)">${ic('bell',22)}</div><div><div class="mk">Служба поддержки</div><h2 style="margin-bottom:0">Вызвать администратора</h2></div></div>`+(st.sent?`<div style="text-align:center;padding:24px 10px 4px"><div class="pf on" style="width:56px;height:56px;margin:auto;border-radius:50%">${ic('spark',24)}</div><h3 style="margin-top:18px">Администратор уже в пути</h3><p class="mu" style="font-size:12px">Запрос отправлен с места ${st.stn}. Ожидайте примерно 2 минуты.</p><button class="btn" data-a="close">Понятно</button></div>`:`<div class="row" style="margin:20px 0 16px;padding:12px;border-radius:12px;background:var(--vs);color:var(--vi)">${ic('mon',18)}<div style="font-size:12px"><span class="mu">Ваше место</span><br><b style="color:var(--ink)">${zone().n} · компьютер ${st.stn}</b></div></div><b style="font-size:12px" class="mu">Что случилось?</b><div class="rs">${['Нужна помощь с компьютером','Проблема с периферией','Принести заказ','Вопрос по бронированию'].map(r=>`<button class="${st.reason===r?'s':''}" data-a="reason" data-v="${r}">${r}</button>`).join('')}</div><label class="fm" style="margin-top:14px"><span class="mu" style="font-size:12px;font-weight:700">Комментарий — необязательно</span><input class="in" data-k="note" placeholder="Опишите проблему подробнее" value="${st.note.replace(/"/g,'&quot;')}"></label>${st.err?`<div class="er">${st.err}</div>`:''}<button class="btn" data-a="call">${ic('bell',17)} Отправить вызов</button>`);
 if(m==='prof'){const u=me();if(u){cls='w';const bk=mine();
 c=`<div class="row"><div class="pf on" style="width:52px;height:52px;background:var(--vi);color:#fff">${ic('user',26)}</div><div><div class="mk">Pixel ID</div><h2 style="margin:0">${esc(u.name)}</h2></div></div>
 <div class="tabs"><button class="${st.tab==='o'?'on':''}" data-a="tab" data-v="o">Профиль</button><button class="${st.tab==='b'?'on':''}" data-a="tab" data-v="b">Бронирования<span>${bk.length}</span></button><button class="${st.tab==='f'?'on':''}" data-a="tab" data-v="f">Друзья<span>${P.friends.length}</span></button></div>`+
@@ -320,21 +339,39 @@ order(){st.order=340+cnt();P.orders.unshift({id:Date.now(),num:st.order,stn:st.s
 tab(v){st.tab=v},auth(v){st.auth=v;st.aerr=''},pack(){P.hours+=10},logout(){P.me=null;st.tab='o'},
 toquests(){st.modal=null;setTimeout(()=>A.nav('quests'))},
 cancel(v){const b=P.bookings.find(x=>x.id===v);if(b){b.st='Отменено';if(b.pay==='hours')P.hours+=b.dur}},
-unfriend(v){P.friends=P.friends.filter(f=>f.l!==v)}};
+unfriend(v){P.friends=P.friends.filter(f=>f.l!==v)},
+async book(){if(st.ok)return;if(!me()){st.modal='prof';st.auth='login';st.aerr='Войдите или зарегистрируйтесь, чтобы забронировать место';return}
+if(pastT(st.time)){st.err='Это время уже прошло — выберите другое время или дату.';return}
+const z=zone();if(st.pay==='hours'&&P.hours<st.dur){st.err='На балансе недостаточно часов. Пополните пакет в профиле.';return}
+const d=D[st.di],{data,error}=await sb.from('bookings').insert({user_id:st.prof.id,date_key:d.k,date_label:d.full,time:st.time,zone:z.n,station:st.stn,venue:st.venue,duration:st.dur,total:tot(),pay:st.pay}).select().single();
+if(error){st.err=error.code==='23505'?'Это место только что заняли — выберите другое.':'Не удалось создать бронь: '+error.message;await loadTaken();render();return}
+if(st.pay==='hours')P.hours-=st.dur;if(st.di===0){P.end=Date.now()+st.dur*36e5;P.sst=st.stn}
+st.lastId=data.id;st.err='';st.ok=1;st.bk.unshift(mb(data));await loadTaken();render()},
+async cancel(v){const b=st.bk.find(x=>x.id===v),{error}=await sb.from('bookings').update({status:'Отменено'}).eq('id',v.replace('PP-',''));if(!error&&b&&b.pay==='hours')P.hours+=b.dur;await loadProfile();await loadTaken();render()},
+async bst(v){const[i,x]=v.split('|');await sb.from('bookings').update({status:x}).eq('id',i.replace('PP-',''));await loadAdmin();await loadTaken();render()},
+async cdone(v){const c=st.ad.c.find(k=>String(k.id)===v);await sb.from('calls').update({done:!c.s}).eq('id',v);await loadAdmin();render()},
+async odone(v){const o=st.ad.o.find(k=>String(k.id)===v);await sb.from('orders').update({done:!o.s}).eq('id',v);await loadAdmin();render()},
+async call(){const{error}=await sb.from('calls').insert({user_id:st.prof?.id||null,station:st.stn,zone:zone().n,reason:st.reason,note:st.note.trim()});if(error)st.err='Не удалось отправить вызов, попробуйте ещё раз';else{st.err='';st.sent=1;st.note=''}render()},
+async order(){if(!me()){st.modal='prof';st.auth='login';st.aerr='Войдите, чтобы заказать к месту';return}
+const items=SH.filter(p=>P.cart[p.id]).map(p=>p.n+' ×'+P.cart[p.id]).join(', '),{data,error}=await sb.from('orders').insert({user_id:st.prof.id,station:st.stn,items,total:sum()}).select().single();
+if(error)st.err='Не удалось отправить заказ, попробуйте ещё раз';else{st.err='';st.order=data.id;P.cart={}}render()},
+async review(){if(!me()){st.modal='prof';st.aerr='Войдите, чтобы оставить отзыв';render();return}
+const t=st.rtext.trim();if(!st.rate){st.rerr='Поставьте оценку от 1 до 5';render();return}if(t.length<10){st.rerr='Напишите отзыв минимум из 10 символов';render();return}
+const{error}=await sb.from('reviews').insert({user_id:st.prof.id,name:st.prof.name,rating:st.rate,text:t});if(error){st.rerr='Не удалось отправить отзыв';render();return}
+st.rate=0;st.rtext='';st.rerr='';await loadReviews();render()},
+async delrev(v){await sb.from('reviews').delete().eq('id',v);await loadReviews();render()},
+async logout(){await sb.auth.signOut();st.prof=null;st.bk=[];st.isA=0;st.tab='o';render()}};
 document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!el)return;if(el.classList.contains('bd')&&e.target!==el)return;
-const r=A[el.dataset.a](el.dataset.v);if(r===1)save();else render()});
+const a=el.dataset.a,r=A[a](el.dataset.v);if(r===1)save();else{render();if(['date','time','venue'].includes(a))loadTaken().then(render);if(a==='modal'&&el.dataset.v==='adm'&&st.isA)loadAdmin().then(render)}});
 document.addEventListener('input',e=>{if(e.target.dataset.k){st[e.target.dataset.k]=e.target.value;if(e.target.dataset.k==='gq')$('#gg').innerHTML=gm()}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&st.modal){st.modal=null;render()}});
-document.addEventListener('submit',e=>{e.preventDefault();const f=e.target,v=Object.fromEntries(new FormData(f)),t=f.dataset.f;
+document.addEventListener('submit',async e=>{e.preventDefault();const f=e.target,v=Object.fromEntries(new FormData(f)),t=f.dataset.f;
 if(t==='friend'){const l=(v.l||'').trim().replace(/^@/,'');if(l.length<3)st.ferr='Введите логин минимум из трёх символов';else if(P.friends.some(x=>x.l.toLowerCase()===l.toLowerCase()))st.ferr='Этот игрок уже у вас в друзьях';else{P.friends.unshift({l,s:'Заявка отправлена',o:0});st.ferr=''}}
 if(t==='auth'){const ph=(v.phone||'').replace(/\D/g,''),reg=st.auth==='reg';
 if(reg&&(v.name||'').trim().length<2)st.aerr='Укажите имя минимум из двух символов';
 else if(ph.length<10)st.aerr='Введите корректный номер телефона';
 else if((v.pw||'').length<6)st.aerr='Пароль должен содержать минимум 6 символов';
-else if(reg&&P.users[ph])st.aerr='Этот номер уже зарегистрирован — войдите';
-else if(!reg&&!P.users[ph])st.aerr='Аккаунт не найден — сначала зарегистрируйтесь';
-else if(!reg&&P.users[ph].pw!==v.pw)st.aerr='Неверный пароль';
-else{if(reg)P.users[ph]={name:v.name.trim(),phone:v.phone.trim(),pw:v.pw};P.me=ph;st.aerr='';st.tab='o'}}
+else{await doAuth(reg,ph,v)}}
 if(t==='pin'){if(v.pin===ADMIN_PIN){st.adm=1;st.aerr=''}else st.aerr='Неверный PIN-код'}
 render()});
 addEventListener('storage',e=>{if(e.key==='pp'){try{P={...P0,...JSON.parse(e.newValue||'{}')};render()}catch{}}});
@@ -342,6 +379,8 @@ setInterval(()=>{const t=$('#tm');if(!t)return;const s=left();if(s>0)t.textConte
 addEventListener('scroll',()=>{let c='booking';for(const id of['booking','tariffs','services','games','tournaments','quests','reviews']){const e=document.getElementById(id);if(e&&e.getBoundingClientRect().top<220)c=id}if(c!==st.nav)mark(c)},{passive:true});
 if(location.hash==='#admin')st.modal='adm';
 fix();render();
+(async()=>{await Promise.all([loadProfile(),loadReviews(),loadTaken()]);render()})();
+setInterval(async()=>{if(!sb||/INPUT|TEXTAREA/.test(document.activeElement.tagName))return;await loadTaken();await loadReviews();if(st.isA)await loadAdmin();render()},20000);
 </script>
 </body>
 </html>
