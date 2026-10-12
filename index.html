@@ -174,6 +174,7 @@ const sb=window.supabase?supabase.createClient('https://zrcqfwdrcndpkbsrzivl.sup
 const ph2e=p=>'p'+p.replace(/\D/g,'').replace(/^8(?=\d{10}$)/,'7')+'@pixelpoint.club';
 const tm=x=>new Date(x).toLocaleString('ru',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
 const mb=b=>({id:'PP-'+b.id,date:b.date_label,time:b.time,zone:b.zone,stn:b.station,dur:b.duration,total:b.total,pay:b.pay,v:b.venue,st:b.status,u:b.profiles});
+function logEv(kind,action,details){if(!sb)return;try{sb.from('activity_log').insert({user_id:st.prof?.id||null,user_name:st.prof?.name||null,kind,action,details:details||null}).then(()=>{},()=>{})}catch(e){}}
 async function loadAdmin(){if(!sb)return;const[b,c,o]=await Promise.all([sb.from('bookings').select('*, profiles(name,phone)').order('created_at',{ascending:false}),sb.from('calls').select('*').order('created_at',{ascending:false}),sb.from('orders').select('*').order('created_at',{ascending:false})]);
 st.ad={b:(b.data||[]).map(mb),c:(c.data||[]).map(x=>({id:x.id,stn:x.station,z:x.zone,r:x.reason,note:x.note,t:tm(x.created_at),s:x.done?1:0})),o:(o.data||[]).map(x=>({id:x.id,num:x.id,stn:x.station,items:x.items,total:x.total,t:tm(x.created_at),s:x.done?1:0}))}}
 async function loadProfile(){if(!sb)return;const{data:{session}}=await sb.auth.getSession();if(!session){st.prof=null;st.bk=[];st.isA=0;return}
@@ -186,8 +187,8 @@ async function doAuth(reg,ph,v){const email=ph2e(ph);
 if(reg){const{data,error}=await sb.auth.signUp({email,password:v.pw});if(error){st.aerr=/registered/i.test(error.message)?'Этот номер уже зарегистрирован — войдите':'Ошибка регистрации: '+error.message;return}
 if(!data.session){st.aerr='В Supabase отключите Confirm email (Authentication → Sign In / Providers → Email).';return}
 await sb.from('profiles').insert({id:data.user.id,name:v.name.trim(),phone:v.phone.trim()})}
-else{const{error}=await sb.auth.signInWithPassword({email,password:v.pw});if(error){st.aerr='Неверный номер или пароль';return}}
-await loadProfile();st.aerr='';st.tab='o'}
+else{const{error}=await sb.auth.signInWithPassword({email,password:v.pw});if(error){logEv('auth','login_fail',ph);st.aerr='Неверный номер или пароль';return}}
+await loadProfile();logEv('auth',reg?'register':'login',ph);st.aerr='';st.tab='o'}
 const ADMIN_PIN='2026';
 const save=()=>{const j=JSON.stringify(P);if(localStorage.getItem('pp')!==j)localStorage.setItem('pp',j)};
 const hm=()=>new Date().toLocaleString('ru',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
@@ -360,9 +361,9 @@ const t=st.rtext.trim();if(!st.rate){st.rerr='Поставьте оценку о
 const{error}=await sb.from('reviews').insert({user_id:st.prof.id,name:st.prof.name,rating:st.rate,text:t});if(error){st.rerr='Не удалось отправить отзыв';render();return}
 st.rate=0;st.rtext='';st.rerr='';await loadReviews();render()},
 async delrev(v){await sb.from('reviews').delete().eq('id',v);await loadReviews();render()},
-async logout(){await sb.auth.signOut();st.prof=null;st.bk=[];st.isA=0;st.tab='o';render()}};
+async logout(){logEv('auth','logout',st.prof?.phone||'');await sb.auth.signOut();st.prof=null;st.bk=[];st.isA=0;st.tab='o';render()}};
 document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!el)return;if(el.classList.contains('bd')&&e.target!==el)return;
-const a=el.dataset.a,r=A[a](el.dataset.v);if(r===1)save();else{render();if(['date','time','venue'].includes(a))loadTaken().then(render);if(a==='modal'&&el.dataset.v==='adm'&&st.isA)loadAdmin().then(render)}});
+const a=el.dataset.a;logEv('click',a,[el.dataset.v,(el.textContent||'').trim().replace(/\s+/g,' ').slice(0,60)].filter(Boolean).join(' | '));const r=A[a](el.dataset.v);if(r===1)save();else{render();if(['date','time','venue'].includes(a))loadTaken().then(render);if(a==='modal'&&el.dataset.v==='adm'&&st.isA)loadAdmin().then(render)}});
 document.addEventListener('input',e=>{if(e.target.dataset.k){st[e.target.dataset.k]=e.target.value;if(e.target.dataset.k==='gq')$('#gg').innerHTML=gm()}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&st.modal){st.modal=null;render()}});
 document.addEventListener('submit',async e=>{e.preventDefault();const f=e.target,v=Object.fromEntries(new FormData(f)),t=f.dataset.f;
