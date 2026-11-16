@@ -46,6 +46,8 @@ hr{border:0;height:1px;background:var(--ln);margin:28px 0}
 .sel{border-color:var(--vi)!important;background:var(--vi)!important;color:#fff!important;box-shadow:0 8px 22px #6c42ef38}.sel small{color:#ffffffb0}
 .cb{border:1px dashed var(--ln);border-radius:14px;background:var(--cv);color:var(--vi);display:grid;place-items:center}
 .tr{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:12px}
+.mr{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}.mr>span{color:var(--mu);font-size:12px;font-weight:700;margin-right:4px}.mr .tc{padding:9px 14px}.mr .tc.now{margin-left:auto;color:var(--vi);border-color:var(--vi)}.stt{margin-top:10px;font-size:12px;color:var(--mu)}.stt b{color:var(--ink)}
+.fd{margin:14px 0;padding:12px 0;border-block:1px solid var(--ln)}.fdh{display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:6px}.fdh button{color:var(--vi);font-weight:800;font-size:12px}.fi{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;font-size:12px;padding:5px 0}.fi .ct{padding:2px;gap:6px}.fi .ct button{width:24px;height:24px}.fi .ct b{min-width:18px;font-size:12px}.fe{font-size:12px;color:var(--mu)}.bl{display:grid;gap:6px;margin:12px 0;font-size:13px}.bl div{display:flex;justify-content:space-between}.bl span{color:var(--mu)}
 .tc{padding:11px;border:1px solid var(--ln);border-radius:10px;background:#fff;color:var(--mu);font:600 13px 'Space Grotesk'}
 .tc:disabled{opacity:.4;text-decoration:line-through}.tc.s{color:var(--vi);border-color:var(--vi);background:var(--vs)}
 .zg{display:grid;grid-template-columns:repeat(4,1fr);gap:11px}
@@ -141,7 +143,7 @@ footer .row span{width:8px;height:8px;border-radius:50%;background:var(--li);box
 .ok3{margin-top:10px;padding:10px;border-radius:10px;color:var(--g);background:#39a65e1a;text-align:center;font-size:12px}
 @media(max-width:1000px){header{height:auto;flex-wrap:wrap;padding-top:10px;padding-bottom:0}nav{order:3;width:100%;height:46px;overflow-x:auto}nav button{white-space:nowrap}.lay,.qs,.tg,.rv{grid-template-columns:1fr}.sum{position:static}}
 @media(max-width:720px){.loc span{display:none}.hero{padding:30px 22px 200px}.hw{left:16px;right:16px;width:auto}.card{padding:20px 16px}.sec{padding:22px 16px}
-.dr{grid-template-columns:repeat(3,1fr)}.dc:nth-of-type(n+4){display:none}.tr{grid-template-columns:repeat(3,1fr)}.zg,.am,.rig,.zs{grid-template-columns:1fr}.z.standard,.z.bootcamp{grid-column:auto}
+.dr{grid-template-columns:repeat(3,1fr)}.dc:nth-of-type(n+4){display:none}.tr{grid-template-columns:repeat(4,1fr)}.zg,.am,.rig,.zs{grid-template-columns:1fr}.z.standard,.z.bootcamp{grid-column:auto}
 .standard .sg,.premium .sg{grid-template-columns:repeat(4,1fr)}.pg2{grid-template-columns:1fr 1fr}.hd{flex-direction:column;align-items:flex-start}.cg{grid-template-columns:repeat(4,1fr)}.fab span+span{display:none}.q{grid-template-columns:40px 1fr}.qbt{grid-column:2;justify-self:start}.sh{flex-wrap:wrap}.lg{margin-left:0}}
 @media(max-width:480px){.pg2{grid-template-columns:1fr}.ck{flex-direction:column;align-items:stretch}.rs{grid-template-columns:1fr}}
 .wh{background:#fff;border:1px solid var(--ln);box-shadow:0 18px 45px #211a3310}.wh h2{color:var(--ink)}.wh p.c{color:var(--mu);margin:0;max-width:520px;line-height:1.5}
@@ -181,7 +183,7 @@ async function loadProfile(){if(!sb)return;const{data:{session}}=await sb.auth.g
 const id=session.user.id,{data:p}=await sb.from('profiles').select('*').eq('id',id).maybeSingle();st.prof=p||{id,name:'Игрок',phone:''};
 const b=await sb.from('bookings').select('*').eq('user_id',id).order('created_at',{ascending:false});st.bk=(b.data||[]).map(mb);
 const a=await sb.rpc('is_admin');st.isA=!!a.data;if(st.isA)await loadAdmin()}
-async function loadTaken(){if(!sb)return;const{data}=await sb.rpc('taken',{p_k:D[st.di].k,p_time:st.time,p_venue:st.venue});st.tk=data||[];fix()}
+async function loadTaken(){if(!sb)return;let r=await sb.rpc('taken_range',{p_k:D[st.di].k,p_time:st.time,p_dur:st.dur,p_venue:st.venue});if(r.error)r=await sb.rpc('taken',{p_k:D[st.di].k,p_time:st.time,p_venue:st.venue});st.tk=r.data||[];fix()}
 async function loadReviews(){if(!sb)return;const{data}=await sb.from('reviews').select('*').order('created_at',{ascending:false});st.rv=(data||[]).map(x=>({id:x.id,n:x.name,r:x.rating,t:x.text,d:new Date(x.created_at).toLocaleDateString('ru'),u:x.user_id}))}
 async function doAuth(reg,ph,v){const email=ph2e(ph);
 if(reg){const{data,error}=await sb.auth.signUp({email,password:v.pw});if(error){st.aerr=/registered/i.test(error.message)?'Этот номер уже зарегистрирован — войдите':'Ошибка регистрации: '+error.message;return}
@@ -192,11 +194,13 @@ await loadProfile();logEv('auth',reg?'register':'login',ph);st.aerr='';st.tab='o
 const ADMIN_PIN='2026';
 const save=()=>{const j=JSON.stringify(P);if(localStorage.getItem('pp')!==j)localStorage.setItem('pp',j)};
 const hm=()=>new Date().toLocaleString('ru',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
-const st={di:0,time:'20:00',zone:'premium',stn:'P06',dur:3,pay:'kaspi',venue:0,modal:null,tab:'o',auth:'login',cat:'all',err:'',nav:'booking',prof:null,bk:[],tk:[],rv:[],isA:0,ad:{b:[],c:[],o:[]},lastId:0,adm:0,at:'b',pc:'',pd:'',gg:'all',gl:'',gq:'',rate:0,rtext:'',rerr:'',ok:0,reason:'Нужна помощь с компьютером',note:'',sent:0,ferr:'',aerr:'',order:0};
+const st={di:0,time:'20:00',zone:'premium',stn:'P06',dur:3,pay:'kaspi',venue:0,modal:null,tab:'o',auth:'login',cat:'all',err:'',nav:'booking',prof:null,bk:[],tk:[],rv:[],isA:0,ad:{b:[],c:[],o:[]},lastId:0,lastTotal:0,lastFood:0,adm:0,at:'b',pc:'',pd:'',gg:'all',gl:'',gq:'',rate:0,rtext:'',rerr:'',ok:0,reason:'Нужна помощь с компьютером',note:'',sent:0,ferr:'',aerr:'',order:0};
 const I={cal:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/>',cart:'<path d="M3 4h2l2.2 10.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L20 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="17" cy="20" r="1"/>',chev:'<path d="m9 18 6-6-6-6"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',coffee:'<path d="M4 9h13v5a6 6 0 0 1-6 6h-1a6 6 0 0 1-6-6V9Z"/><path d="M17 11h1a3 3 0 0 1 0 6h-2M7 4c0 1 1 1.5 1 2.5M12 4c0 1 1 1.5 1 2.5"/>',pad:'<path d="M7 7h10a5 5 0 0 1 4.6 7l-1.1 2.7a2.5 2.5 0 0 1-4 1l-1.6-1.4H9.1l-1.6 1.4a2.5 2.5 0 0 1-4-1L2.4 14A5 5 0 0 1 7 7Z"/><path d="M7 10v4M5 12h4M16 11h.01M18 13h.01"/>',head:'<path d="M4 14v-2a8 8 0 0 1 16 0v2"/><path d="M6 13H5a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h2v-7ZM18 13h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-2v-7Z"/>',loc:'<path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/>',minus:'<path d="M5 12h14"/>',mon:'<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>',plus:'<path d="M12 5v14M5 12h14"/>',spark:'<path d="m12 2 1.5 5.5L19 9l-5.5 1.5L12 16l-1.5-5.5L5 9l5.5-1.5L12 2Z"/>',cup:'<path d="M8 4h8v4a4 4 0 0 1-8 0V4ZM10 12v4M14 12v4M8 20h8M10 16h4"/><path d="M8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',wifi:'<path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19" r="1"/>',bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/>'};
 const ic=(n,s=20)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${I[n]}</svg>`;
 const D=Array.from({length:14},(_,i)=>{const d=new Date();d.setDate(d.getDate()+i);const f=d.toLocaleDateString('ru',{day:'numeric',month:'long'}).split(' ');return{k:d.toDateString(),day:i?d.toLocaleDateString('ru',{weekday:'short'}).replace(/^./,c=>c.toUpperCase()):'Сегодня',n:f[0],m:f[1],full:d.toLocaleDateString('ru',{day:'numeric',month:'long',year:'numeric'})}});
-const T=['18:00','19:00','20:00','21:00','22:00','23:00'];
+const HRS=Array.from({length:24},(_,i)=>String(i).padStart(2,'0')),MINS=['00','15','30','45'];
+const mins=t=>+t.slice(0,2)*60+ +t.slice(3,5),nowM=()=>{const n=new Date();return n.getHours()*60+n.getMinutes()},m2t=m=>String(m/60|0).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
+const endT=()=>{const e=mins(st.time)+st.dur*60;return m2t(e%1440)+(e>=1440?' (на след. день)':'')};
 const Z=[{id:'standard',n:'Standard',m:'RTX 4060 · 165 Гц',p:600,i:'mon'},{id:'premium',n:'Premium',m:'RTX 4070 SUPER · 240 Гц',p:1000,i:'spark'},{id:'vip',n:'VIP Room',m:'RTX 4080 · 360 Гц · приватно',p:1500,i:'cup'},{id:'bootcamp',n:'Bootcamp',m:'5 мест рядом',p:4500,i:'head'}];
 const G=[{id:'standard',t:'Standard Hall',m:'24 места · RTX 4060',x:'S',c:24},{id:'premium',t:'Premium Arena',m:'12 мест · RTX 4070 SUPER',x:'P',c:12},{id:'vip',t:'VIP Rooms',m:'6 приватных мест · RTX 4080',x:'V',c:6},{id:'bootcamp',t:'Bootcamp',m:'2 команды по 5 мест',x:'B',c:10}];
 const DEF={standard:'S01',premium:'P06',vip:'V01',bootcamp:'B01'};
@@ -212,8 +216,9 @@ const me=()=>st.prof;
 const mine=()=>st.bk;
 const taken=(k,t,s)=>P.bookings.some(b=>b.st==='Предстоит'&&b.k===k&&b.time===t&&b.stn===s&&b.v===st.venue);
 function busy(g,n){return st.tk.includes(g.x+String(n).padStart(2,'0'))}
-function fix(){if(pastT(st.time)){const t=T.find(x=>!pastT(x));if(t)st.time=t}const g=G.find(x=>x.id===st.zone);if(busy(g,+st.stn.slice(1)))for(let n=1;n<=g.c;n++)if(!busy(g,n)){st.stn=g.x+String(n).padStart(2,'0');return}}
-const pastT=t=>st.di===0&&+t.slice(0,2)<=new Date().getHours();
+function nextSlot(){const m=Math.ceil((nowM()+1)/15)*15;if(m>=1440){st.di=Math.min(1,D.length-1);st.time='00:00'}else st.time=m2t(m)}
+function fix(){if(pastT(st.time))nextSlot();const g=G.find(x=>x.id===st.zone);if(busy(g,+st.stn.slice(1)))for(let n=1;n<=g.c;n++)if(!busy(g,n)){st.stn=g.x+String(n).padStart(2,'0');return}}
+const pastT=t=>st.di===0&&mins(t)<nowM();
 const free=()=>G.reduce((a,g)=>a+Array.from({length:g.c},(_,i)=>busy(g,i+1)?0:1).reduce((x,y)=>x+y,0),0);
 const left=()=>Math.max(0,Math.round((P.end-Date.now())/1000));
 const clk=s=>[s/3600|0,s%3600/60|0,s%60].map(v=>String(v).padStart(2,'0')).join(':');
@@ -227,8 +232,8 @@ const LN={steam:['Steam','#1b6fa8'],epic:['Epic Games','#2b2b33'],bnet:['Battle.
 const GN={sh:'Шутеры',mo:'MOBA и стратегии',rp:'RPG и экшен',rc:'Гонки и спорт',co:'Кооператив и выживание'};
 const GM=`Counter-Strike 2|sh|steam;Valorant|sh|riot;Apex Legends|sh|steam;Call of Duty: Warzone|sh|bnet;Overwatch 2|sh|bnet;PUBG: Battlegrounds|sh|steam;Rainbow Six Siege|sh|ubi;Battlefield 2042|sh|ea;Fortnite|sh|epic;Destiny 2|sh|steam;Dota 2|mo|steam;League of Legends|mo|riot;Teamfight Tactics|mo|riot;Heroes of the Storm|mo|bnet;StarCraft II|mo|bnet;Age of Empires IV|mo|steam;Civilization VI|mo|epic;Cyberpunk 2077|rp|steam;The Witcher 3|rp|steam;Elden Ring|rp|steam;Baldur's Gate 3|rp|steam;Diablo IV|rp|bnet;Path of Exile|rp|steam;Genshin Impact|rp|epic;Black Myth: Wukong|rp|steam;GTA V|rp|rock;Red Dead Redemption 2|rp|rock;Hogwarts Legacy|rp|epic;Skyrim|rp|steam;EA Sports FC 25|rc|ea;F1 24|rc|ea;Need for Speed Heat|rc|ea;NBA 2K25|rc|steam;Forza Horizon 5|rc|steam;Assetto Corsa|rc|steam;Rocket League|rc|epic;Rust|co|steam;Lethal Company|co|steam;Phasmophobia|co|steam;Deep Rock Galactic|co|steam;Left 4 Dead 2|co|steam;Sea of Thieves|co|steam;Palworld|co|steam;Terraria|co|steam;It Takes Two|co|ea;Among Us|co|steam`.split(';').map(x=>{const a=x.split('|');return{n:a[0],g:a[1],l:a[2]}});
 const SID={'Counter-Strike 2':730,'Apex Legends':1172470,'Call of Duty: Warzone':1938090,'Overwatch 2':2357570,'PUBG: Battlegrounds':578080,'Rainbow Six Siege':359550,'Battlefield 2042':1517290,'Destiny 2':1085660,'Dota 2':570,'Age of Empires IV':1466860,'Civilization VI':289070,'Cyberpunk 2077':1091500,'The Witcher 3':292030,'Elden Ring':1245620,"Baldur's Gate 3":1086940,'Diablo IV':2344520,'Path of Exile':238960,'Black Myth: Wukong':2358720,'GTA V':271590,'Red Dead Redemption 2':1174180,'Hogwarts Legacy':990080,'Skyrim':72850,'EA Sports FC 25':2669320,'F1 24':2488620,'Need for Speed Heat':1222680,'NBA 2K25':2878980,'Forza Horizon 5':1551360,'Assetto Corsa':244210,'Rust':252490,'Lethal Company':1966720,'Phasmophobia':739630,'Deep Rock Galactic':548430,'Left 4 Dead 2':550,'Sea of Thieves':1172620,'Palworld':1623730,'Terraria':105600,'It Takes Two':1426210,'Among Us':945360};
-const FQ=[['Как отменить бронь?','В профиле откройте «Бронирования» и нажмите «Отменить бронь». Часы, оплаченные балансом, вернутся на счёт.'],['Как можно оплатить?','Балансом часов, через Kaspi Pay, Halyk Bank, картой Visa или Mastercard, а также на стойке администратора в клубе.'],['Что делать, если нужна помощь?','Нажмите «Вызвать администратора» в правом нижнем углу — он подойдёт к вашему месту примерно через 2 минуты.'],['Можно ли заказать еду и напитки?','Да. Откройте «Магазин», добавьте позиции в корзину и закажите — всё принесут к вашему компьютеру.'],['Клуб работает ночью?','Да, Pixel Point открыт круглосуточно, без выходных.']];
-const PROMO={PIXEL10:.1,GAMER15:.15};const disc=()=>PROMO[st.pd]||0;const tot=()=>Math.round(zone().p*st.dur*(1-disc()));
+const FQ=[['Как отменить бронь?','В профиле откройте «Бронирования» и нажмите «Отменить бронь». Часы, оплаченные балансом, вернутся на счёт.'],['Как можно оплатить?','Балансом часов, через Kaspi Pay, Halyk Bank, картой Visa или Mastercard, а также на стойке администратора в клубе.'],['Что делать, если нужна помощь?','Нажмите «Вызвать администратора» в правом нижнем углу — он подойдёт к вашему месту примерно через 2 минуты.'],['Можно ли заказать еду и напитки?','Да. Откройте «Магазин» и добавьте позиции — они попадут в общий счёт вместе с бронью, а заказ принесут к вашему компьютеру.'],['Клуб работает ночью?','Да, Pixel Point открыт круглосуточно, без выходных.']];
+const PROMO={PIXEL10:.1,GAMER15:.15};const disc=()=>PROMO[st.pd]||0;const tot=()=>Math.round(zone().p*st.dur*(1-disc()));const grand=()=>tot()+sum();
 const info=()=>`<section class="sec wh" id="info"><div class="hd"><div><div class="ey" style="color:var(--vi)">Как нас найти</div><h2>Адреса и частые вопросы</h2></div></div><div class="rv"><div>${V.map(v=>`<div class="rc"><b>${v[0]}</b><p>${v[1]}, Семей · круглосуточно</p><a class="mp" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v[1]+', Семей')}">Проложить маршрут</a></div>`).join('')}</div><div>${FQ.map(f=>`<details class="fq"><summary>${f[0]}</summary><p>${f[1]}</p></details>`).join('')}</div></div></section>`;
 const pl=n=>n%10==1&&n%100!=11?'отзыв':[2,3,4].includes(n%10)&&![12,13,14].includes(n%100)?'отзыва':'отзывов';
 const stars=n=>'★'.repeat(n)+'☆'.repeat(5-n);
@@ -251,7 +256,9 @@ return `<header><div class="row"><div class="bm">${ic('pad',22)}</div><div class
 <section class="lay" id="booking"><div class="card">
 <div class="sh"><div class="sn">01</div><div><h2>Выберите дату и время</h2><small>Можно забронировать на 14 дней вперёд</small></div></div>
 <div class="dr">${D.slice(0,5).map((x,i)=>`<button class="dc ${st.di===i?'sel':''}" data-a="date" data-v="${i}"><small>${x.day}</small><b>${x.n}</b><small>${x.m}</small></button>`).join('')}<button class="cb" data-a="modal" data-v="cal" aria-label="Календарь">${ic('cal')}</button></div>
-<div class="tr">${T.map(t=>`<button class="tc ${st.time===t?'s':''}" data-a="time" data-v="${t}" ${pastT(t)?'disabled':''}>${t}</button>`).join('')}</div><hr>
+<div class="tr">${HRS.map(h=>`<button class="tc ${st.time.slice(0,2)===h?'s':''}" data-a="hour" data-v="${h}" ${st.di===0&&+h<new Date().getHours()?'disabled':''}>${h}:00</button>`).join('')}</div>
+<div class="mr"><span>Минуты</span>${MINS.map(m=>`<button class="tc ${st.time.slice(3)===m?'s':''}" data-a="minute" data-v="${m}" ${pastT(st.time.slice(0,2)+':'+m)?'disabled':''}>:${m}</button>`).join('')}<button class="tc now" data-a="now">Сейчас</button></div>
+<div class="stt">Начало: <b>${st.time}</b> · клуб работает круглосуточно, бронь можно на любое время</div><hr>
 <div class="sh" id="tariffs"><div class="sn">02</div><div><h2>Выберите игровую зону</h2><small>Конфигурации для любого уровня игры</small></div></div>
 <div class="zg">${Z.map(x=>`<button class="zc ${st.zone===x.id?'s':''}" data-a="zone" data-v="${x.id}"><span class="zi">${ic(x.i)}</span><b>${x.n}</b><span>${x.m}</span><em>от ${fmt(x.p)} <span>/ час</span></em></button>`).join('')}</div><hr>
 <div class="sh"><div class="sn">03</div><div><h2>Выберите компьютер</h2><small>Свободно ${free()} из 52 мест во всех зонах</small></div><div class="lg"><span><i></i>Свободно</span><span><i class="b"></i>Занято</span><span><i class="v"></i>Выбрано</span></div></div>
@@ -264,14 +271,16 @@ return `<header><div class="row"><div class="bm">${ic('pad',22)}</div><div class
 <div class="inc"><span>Также включено:</span>Механическая клавиатура · Игровая мышь · Гарнитура 7.1 · Эргономичное кресло · Личный шкафчик</div></div>
 <aside class="card sum"><div class="k">Ваше бронирование</div><h2>Почти готово</h2>
 <div class="pl"><div></div><div><b>${V[st.venue][0]}</b><small>${V[st.venue][1]}</small></div></div>
-<div class="dt"><div><span>Дата</span><b>${d.n} ${d.m}, ${d.day.toLowerCase()}</b></div><div><span>Начало</span><b>${st.time}</b></div><div><span>Зона</span><b>${z.n}</b></div><div><span>Компьютер</span><b>№ ${st.stn}</b></div></div>
+<div class="dt"><div><span>Дата</span><b>${d.n} ${d.m}, ${d.day.toLowerCase()}</b></div><div><span>Начало</span><b>${st.time}</b></div><div><span>Окончание</span><b>${endT()}</b></div><div><span>Зона</span><b>${z.n}</b></div><div><span>Компьютер</span><b>№ ${st.stn}</b></div></div>
 <div class="du"><div>Продолжительность<small>Минимум 1 час</small></div><div class="ct"><button data-a="dur" data-v="-1" ${st.dur===1?'disabled':''} aria-label="Меньше">${ic('minus',16)}</button><b>${st.dur} ч</b><button data-a="dur" data-v="1" ${st.dur===8?'disabled':''} aria-label="Больше">${ic('plus',16)}</button></div></div>
-<div class="tot"><div>Итого<small>${fmt(z.p)} × ${st.dur} ч${st.pd?' − '+disc()*100+'%':''}</small></div><b>${fmt(tot())}</b></div>
+<div class="fd"><div class="fdh"><b>Еда и напитки</b><button data-a="modal" data-v="shop">+ Добавить</button></div>${cnt()?SH.filter(p=>P.cart[p.id]).map(p=>`<div class="fi"><span>${p.n}</span><div class="ct"><button data-a="cart" data-v="${p.id}|-1" aria-label="Меньше">${ic('minus',12)}</button><b>${P.cart[p.id]}</b><button data-a="cart" data-v="${p.id}|1" aria-label="Больше">${ic('plus',12)}</button></div><b>${fmt(p.p*P.cart[p.id])}</b></div>`).join(''):'<div class="fe">Пока ничего не добавлено. Заказ принесут к вашему месту.</div>'}</div>
+<div class="bl"><div><span>Бронь · ${fmt(z.p)} × ${st.dur} ч${st.pd?' − '+Math.round(disc()*100)+'%':''}</span><b>${fmt(tot())}</b></div>${cnt()?`<div><span>Еда и напитки · ${cnt()} поз.</span><b>${fmt(sum())}</b></div>`:''}</div>
+<div class="tot"><div>Общий счёт<small>Бронь${cnt()?' + еда':''} · одним платежом</small></div><b>${fmt(grand())}</b></div>${st.pay==='hours'&&cnt()?`<div class="ok2" style="text-align:left;color:var(--mu)">Часы спишутся за бронь, еду (${fmt(sum())}) оплатите в клубе.</div>`:''}
 <form class="ff" style="margin-top:12px" onsubmit="return false"><input class="in" data-k="pc" placeholder="Промокод" value="${esc(st.pc)}" aria-label="Промокод"><button type="button" data-a="promo">Применить</button></form>${st.pd?`<div class="ok2">Скидка ${disc()*100}% применена</div>`:''}
 <div class="pt">Способ оплаты</div><div class="pg">${PM.map(m=>`<button class="pm ${st.pay===m[0]?'s':''}" data-a="pay" data-v="${m[0]}"><span class="pk" style="background:${m[3]};${m[0]==='cash'?'color:#17151e':''}">${m[0]==='hours'?P.hours+'ч':m[2]}</span>${m[1]}</button>`).join('')}</div>
 ${st.err?`<div class="er">${st.err}</div>`:''}
 <button class="btn ${ok?'ok':''}" data-a="book">${ok?'Место забронировано ✓':'Забронировать'}</button>
-${ok?`<div class="ok2">Бронь PP-${st.lastId} создана. Оплата: ${PM.find(m=>m[0]===st.pay)[1]}.</div>`:''}
+${ok?`<div class="ok2">Бронь PP-${st.lastId} создана${st.lastFood?' вместе с заказом еды':''}. Общий счёт: ${fmt(st.lastTotal)}. Оплата: ${PM.find(m=>m[0]===st.pay)[1]}.</div>`:''}
 <div class="nt">Безопасная оплата · Отмена бесплатно за 2 часа</div></aside></section>
 ${games()}<section class="sec dark" id="tournaments"><div class="hd"><div><div class="ey">Каждую неделю</div><h2>Турниры Pixel Point</h2><p>Собирай команду, участвуй в лигах и забирай реальные призовые.</p></div><div class="pill">${ic('cup',16)} Сезон · 2026</div></div>
 <div class="tg">${TR.map((t,i)=>{const r=P.tours.includes(t[0]);return `<div class="t"><div class="top"><b>0${i+1}</b><span>${i?'Скоро':'Регистрация открыта'}</span></div><h3>${t[1]}</h3><small>${t[2]}</small><div class="ti"><div><span>Дата</span><b>${t[3]}</b></div><div><span>Призовой фонд</span><b>${t[4]}</b></div></div><div class="tf"><span>${t[5]+(r?1:0)} / ${t[6]} команд</span><button class="tb ${r?'r':''}" data-a="tour" data-v="${t[0]}">${r?'Отменить участие':'Участвовать'}</button></div></div>`}).join('')}</div></section>
@@ -284,10 +293,10 @@ function modal(){const m=st.modal;if(!m)return '';let c='',cls='';
 if(m==='loc')c=`<div class="mk">Клубы в Семее</div><h2>Выберите локацию</h2><div class="vl">${V.map((v,i)=>`<button class="v ${st.venue===i?'s':''}" data-a="venue" data-v="${i}"><span class="zi">${ic('loc',18)}</span><span><b>${v[0]}</b><small>${v[1]}</small></span><em>${v[2]}</em></button>`).join('')}</div>`;
 if(m==='cal')c=`<div class="mk">Календарь</div><h2>Выберите дату</h2><div class="cg">${D.map((x,i)=>`<button class="cd ${st.di===i?'sel':''}" data-a="date" data-v="${i}"><small>${x.day}</small><b>${x.n}</b><small>${x.m}</small></button>`).join('')}</div>`;
 if(m==='shop'){cls='x';const L=SH.filter(p=>st.cat==='all'||p.c===st.cat);
-c=`<div class="hero2"><div><div class="mk">Pixel Bar · 24/7</div><h2>Перекус прямо к месту</h2><p>Закажите еду и напитки — администратор принесёт всё к компьютеру ${st.stn}.</p></div><div class="cbg">${ic('cart',17)} ${cnt()}</div></div>
+c=`<div class="hero2"><div><div class="mk">Pixel Bar · 24/7</div><h2>Перекус прямо к месту</h2><p>Добавьте еду и напитки — они попадут в общий счёт вместе с бронью, а администратор принесёт всё к компьютеру ${st.stn}.</p></div><div class="cbg">${ic('cart',17)} ${cnt()}</div></div>
 <div class="tb2"><div class="cats">${CATS.map(k=>`<button class="${st.cat===k[0]?'on':''}" data-a="cat" data-v="${k[0]}">${k[1]}</button>`).join('')}</div><span>${L.length} товаров</span></div>
 <div class="pg2">${L.map(p=>{const n=P.cart[p.id]||0;return `<div class="p"><div class="im"><img src="${p.im}" alt="${p.n}" loading="lazy">${n?`<span class="n">${n}</span>`:''}</div><div><b>${p.n}</b><small>${p.m}</small><em>${fmt(p.p)}</em></div>${n?`<div class="pc"><button data-a="cart" data-v="${p.id}|-1" aria-label="Меньше">${ic('minus',14)}</button><span>${n}</span><button data-a="cart" data-v="${p.id}|1" aria-label="Больше">${ic('plus',14)}</button></div>`:`<button class="pa" data-a="cart" data-v="${p.id}|1">${ic('plus',15)} Добавить</button>`}</div>`}).join('')}</div>
-<div class="ck"><div><small>В корзине · ${cnt()} поз.</small><b>${fmt(sum())}</b></div><button data-a="order" ${cnt()?'':'disabled'}>Заказать к месту</button></div>${st.err?`<div class="er">${st.err}</div>`:''}${st.order?`<div class="ok3">Заказ №PB-${st.order} принят. Доставим к месту ${st.stn} примерно через 7 минут.</div>`:''}`}
+<div class="ck"><div><small>В корзине · ${cnt()} поз.</small><b>${fmt(sum())}</b></div><button data-a="tobill" ${cnt()?'':'disabled'}>Добавить в счёт брони</button></div>`}
 if(m==='adm'){cls='x';
 if(!st.isA)c=`<div class="mk">Служба клуба</div><h2>Панель администратора</h2><p class="mu">${me()?'У этого аккаунта нет прав администратора.':'Войдите в аккаунт администратора, чтобы открыть панель.'}</p>${me()?'':'<button class="btn" data-a="modal" data-v="prof">Войти</button>'}`;
 else{const B=st.ad.b,C=st.ad.c,O=st.ad.o,oc=C.filter(x=>!x.s).length,oo=O.filter(x=>!x.s).length,rev=B.filter(b=>b.st!=='Отменено').reduce((a,b)=>a+b.total,0);
@@ -323,7 +332,7 @@ P.reviews.push({id:Date.now(),n:me().name,r:st.rate,t,d:new Date().toLocaleDateS
 delrev(v){P.reviews=P.reviews.filter(x=>String(x.id)!==v)},
 nav(v){mark(v);document.getElementById(v)?.scrollIntoView({behavior:'smooth'});return 1},
 modal(v){st.modal=v;st.order=0;st.sent=0;st.err='';st.aerr=''},close(){st.modal=null},
-date(v){st.di=+v;st.ok=0;st.modal=null;fix()},time(v){st.time=v;st.ok=0;fix()},
+date(v){st.di=+v;st.ok=0;st.modal=null;fix()},time(v){st.time=v;st.ok=0;fix()},hour(v){st.time=v+':'+st.time.slice(3);st.ok=0;fix()},minute(v){st.time=st.time.slice(0,2)+':'+v;st.ok=0;fix()},now(){st.di=0;st.ok=0;st.time='00:00';nextSlot();fix()},
 zone(v){st.zone=v;st.stn=DEF[v];st.ok=0;fix()},stn(v){const[a,b]=v.split('|');st.zone=a;st.stn=b;st.ok=0},
 dur(v){st.dur=Math.min(8,Math.max(1,st.dur+ +v));st.ok=0},pay(v){st.pay=v;st.ok=0;st.err=''},venue(v){st.venue=+v;st.ok=0;st.modal=null;fix()},
 book(){if(st.ok)return;if(!me()){st.modal='prof';st.auth='login';st.aerr='Войдите или зарегистрируйтесь, чтобы забронировать место';return}
@@ -336,7 +345,7 @@ tour(v){P.tours=P.tours.includes(v)?P.tours.filter(x=>x!==v):[...P.tours,v]},
 quest(v){const x=Q().find(k=>k.id===v);if(x.prog<x.goal){document.getElementById('booking').scrollIntoView({behavior:'smooth'});return 1}
 if(!me()){st.modal='prof';st.aerr='Войдите, чтобы получить награду';return}if(!P.claimed.includes(v)){P.claimed.push(v);P.bonus+=x.r;P.hours+=x.r}},
 cat(v){st.cat=v},cart(v){const[i,n]=v.split('|');const c=Math.max(0,(P.cart[i]||0)+ +n);c?P.cart[i]=c:delete P.cart[i];st.order=0},
-order(){st.order=340+cnt();P.orders.unshift({id:Date.now(),num:st.order,stn:st.stn,t:hm(),total:sum(),items:SH.filter(p=>P.cart[p.id]).map(p=>p.n+' ×'+P.cart[p.id]).join(', '),s:0});P.cart={}},reason(v){st.reason=v},call(){P.calls.unshift({id:Date.now(),stn:st.stn,z:zone().n,r:st.reason,note:st.note.trim(),t:hm(),s:0});st.sent=1;st.note=''},
+tobill(){st.modal=null;setTimeout(()=>document.querySelector('.sum')?.scrollIntoView({behavior:'smooth',block:'center'}))},order(){st.order=340+cnt();P.orders.unshift({id:Date.now(),num:st.order,stn:st.stn,t:hm(),total:sum(),items:SH.filter(p=>P.cart[p.id]).map(p=>p.n+' ×'+P.cart[p.id]).join(', '),s:0});P.cart={}},reason(v){st.reason=v},call(){P.calls.unshift({id:Date.now(),stn:st.stn,z:zone().n,r:st.reason,note:st.note.trim(),t:hm(),s:0});st.sent=1;st.note=''},
 tab(v){st.tab=v},auth(v){st.auth=v;st.aerr=''},pack(){P.hours+=10},logout(){P.me=null;st.tab='o'},
 toquests(){st.modal=null;setTimeout(()=>A.nav('quests'))},
 cancel(v){const b=P.bookings.find(x=>x.id===v);if(b){b.st='Отменено';if(b.pay==='hours')P.hours+=b.dur}},
@@ -344,10 +353,14 @@ unfriend(v){P.friends=P.friends.filter(f=>f.l!==v)},
 async book(){if(st.ok)return;if(!me()){st.modal='prof';st.auth='login';st.aerr='Войдите или зарегистрируйтесь, чтобы забронировать место';return}
 if(pastT(st.time)){st.err='Это время уже прошло — выберите другое время или дату.';return}
 const z=zone();if(st.pay==='hours'&&P.hours<st.dur){st.err='На балансе недостаточно часов. Пополните пакет в профиле.';return}
-const d=D[st.di],{data,error}=await sb.from('bookings').insert({user_id:st.prof.id,date_key:d.k,date_label:d.full,time:st.time,zone:z.n,station:st.stn,venue:st.venue,duration:st.dur,total:tot(),pay:st.pay}).select().single();
+const d=D[st.di],{data,error}=await sb.from('bookings').insert({user_id:st.prof.id,date_key:d.k,date_label:d.full,time:st.time,zone:z.n,station:st.stn,venue:st.venue,duration:st.dur,total:grand(),pay:st.pay}).select().single();
 if(error){st.err=error.code==='23505'?'Это место только что заняли — выберите другое.':'Не удалось создать бронь: '+error.message;await loadTaken();render();return}
-if(st.pay==='hours')P.hours-=st.dur;if(st.di===0){P.end=Date.now()+st.dur*36e5;P.sst=st.stn}
-st.lastId=data.id;st.err='';st.ok=1;st.bk.unshift(mb(data));await loadTaken();render()},
+if(st.pay==='hours')P.hours-=st.dur;if(st.di===0&&mins(st.time)-nowM()<=15){P.end=Date.now()+st.dur*36e5;P.sst=st.stn}
+let oerr=0;if(cnt()){const items='['+mb(data).id+'] '+SH.filter(p=>P.cart[p.id]).map(p=>p.n+' ×'+P.cart[p.id]).join(', '),o=await sb.from('orders').insert({user_id:st.prof.id,station:st.stn,items,total:sum()});
+if(o.error){oerr=1;await sb.from('bookings').update({total:tot()}).eq('id',data.id);data.total=tot()}}
+st.lastId=data.id;st.lastTotal=data.total;st.lastFood=oerr?0:cnt();
+if(oerr)st.err='Бронь создана, но еду добавить не удалось. Она осталась в корзине — оформите заказ ещё раз или скажите администратору.';else{st.err='';P.cart={}}
+st.ok=1;st.bk.unshift(mb(data));await loadTaken();render()},
 async cancel(v){const b=st.bk.find(x=>x.id===v),{error}=await sb.from('bookings').update({status:'Отменено'}).eq('id',v.replace('PP-',''));if(!error&&b&&b.pay==='hours')P.hours+=b.dur;await loadProfile();await loadTaken();render()},
 async bst(v){const[i,x]=v.split('|');await sb.from('bookings').update({status:x}).eq('id',i.replace('PP-',''));await loadAdmin();await loadTaken();render()},
 async cdone(v){const c=st.ad.c.find(k=>String(k.id)===v);await sb.from('calls').update({done:!c.s}).eq('id',v);await loadAdmin();render()},
@@ -363,7 +376,7 @@ st.rate=0;st.rtext='';st.rerr='';await loadReviews();render()},
 async delrev(v){await sb.from('reviews').delete().eq('id',v);await loadReviews();render()},
 async logout(){logEv('auth','logout',st.prof?.phone||'');await sb.auth.signOut();st.prof=null;st.bk=[];st.isA=0;st.tab='o';render()}};
 document.addEventListener('click',e=>{const el=e.target.closest('[data-a]');if(!el)return;if(el.classList.contains('bd')&&e.target!==el)return;
-const a=el.dataset.a;logEv('click',a,[el.dataset.v,(el.textContent||'').trim().replace(/\s+/g,' ').slice(0,60)].filter(Boolean).join(' | '));const r=A[a](el.dataset.v);if(r===1)save();else{render();if(['date','time','venue'].includes(a))loadTaken().then(render);if(a==='modal'&&el.dataset.v==='adm'&&st.isA)loadAdmin().then(render)}});
+const a=el.dataset.a;logEv('click',a,[el.dataset.v,(el.textContent||'').trim().replace(/\s+/g,' ').slice(0,60)].filter(Boolean).join(' | '));const r=A[a](el.dataset.v);if(r===1)save();else{render();if(['date','time','hour','minute','now','dur','venue'].includes(a))loadTaken().then(render);if(a==='modal'&&el.dataset.v==='adm'&&st.isA)loadAdmin().then(render)}});
 document.addEventListener('input',e=>{if(e.target.dataset.k){st[e.target.dataset.k]=e.target.value;if(e.target.dataset.k==='gq')$('#gg').innerHTML=gm()}});
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&st.modal){st.modal=null;render()}});
 document.addEventListener('submit',async e=>{e.preventDefault();const f=e.target,v=Object.fromEntries(new FormData(f)),t=f.dataset.f;
