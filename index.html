@@ -445,12 +445,12 @@ async function send(text){
   $a('aic-q').innerHTML='';inp.value='';add('me',text);hist.push({role:'user',content:text});
   busy=true;snd.disabled=true;const t=add('bot typ','Печатает…');
   try{
-    const {data,error}=await sb.functions.invoke(FN,{body:{messages:hist.slice(-20)}});
+    const {data,error}=await Promise.race([sb.functions.invoke(FN,{body:{messages:hist.slice(-20)}}),new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),40000))]);
     t.remove();
     if(error||!data){console.warn('ai',error);add('err','Не удалось получить ответ. Попробуйте ещё раз.');hist.pop()}
     else if(data.error){add('err',ERR[data.error]||'Ошибка. Попробуйте ещё раз.');hist.pop()}
     else{add('bot',data.reply);hist.push({role:'assistant',content:data.reply})}
-  }catch(e){console.warn('ai',e);t.remove();add('err','Нет связи. Проверьте интернет.');hist.pop()}
+  }catch(e){console.warn('ai',e);t.remove();add('err',e&&e.message==='timeout'?'ИИ долго не отвечает. Попробуйте ещё раз.':'Нет связи. Проверьте интернет.');hist.pop()}
   busy=false;snd.disabled=false;inp.focus();
 }
 $a('aic-btn').onclick=()=>{win.classList.toggle('open');if(win.classList.contains('open')){if(!log.children.length)hello();inp.focus()}};
