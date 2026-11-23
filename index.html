@@ -6,6 +6,8 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E🎮%3C/text%3E%3C/svg%3E">
 <meta name="description" content="Pixel Point — компьютерный клуб в Семее: онлайн-бронирование мест, игры, турниры, бар 24/7.">
 <meta name="theme-color" content="#17151e">
+<meta property="og:type" content="website"><meta property="og:title" content="Pixel Point — компьютерный клуб в Семее"><meta property="og:description" content="Онлайн-бронирование мест, игры, турниры, бар 24/7. Два клуба: Центр и Абай.">
+<link rel="preconnect" href="https://zrcqfwdrcndpkbsrzivl.supabase.co" crossorigin><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <title>PixelPoint — Компьютерный клуб</title>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
@@ -169,6 +171,7 @@ footer .row span{width:8px;height:8px;border-radius:50%;background:var(--li);box
 </head>
 <body>
 <div id="app"></div>
+<noscript><p style="padding:40px;text-align:center;font:600 16px sans-serif">Для работы сайта Pixel Point включите JavaScript.</p></noscript>
 <script>
 const $=s=>document.querySelector(s),fmt=n=>n.toLocaleString('ru-RU')+' ₸';
 const P0={users:{},me:null,bookings:[],hours:12,bonus:0,friends:[{l:'nurik_cs',s:'В игре · CS2',o:1},{l:'aika.gg',s:'Онлайн',o:1},{l:'semey_wolf',s:'Был 2 часа назад',o:0}],tours:[],claimed:[],cart:{},calls:[],orders:[],reviews:[{id:1,n:'Данияр',r:5,t:'Premium-зал огонь: 240 Гц и тишина, пинг в CS2 стабильный. Персонал быстрый.',d:'12.09.2026'},{id:2,n:'Аружан',r:5,t:'Приходим командой на буткемп. Удобно, что всё бронируется онлайн.',d:'14.09.2026'},{id:3,n:'Ерлан',r:4,t:'Отличные компьютеры и кресла. В выходные вечером многолюдно, лучше бронировать заранее.',d:'18.09.2026'},{id:4,n:'Мадина',r:5,t:'Люблю ночные сеты: бар работает круглосуточно и заказ приносят прямо к месту.',d:'21.09.2026'},{id:5,n:'Тимур',r:4,t:'Большая библиотека игр, всё установлено и обновлено. Хотелось бы больше турниров по Dota.',d:'25.09.2026'}],end:0,sst:''};
@@ -187,18 +190,19 @@ const a=await sb.rpc('is_admin');st.isA=!!a.data;if(st.isA)await loadAdmin()}
 async function loadTaken(){if(!sb)return;let r=await sb.rpc('taken_range',{p_k:D[st.di].k,p_time:st.time,p_dur:st.dur,p_venue:st.venue});if(r.error)r=await sb.rpc('taken',{p_k:D[st.di].k,p_time:st.time,p_venue:st.venue});st.tk=r.data||[];fix()}
 async function loadReviews(){if(!sb)return;const{data}=await sb.from('reviews').select('*').order('created_at',{ascending:false});st.rv=(data||[]).map(x=>({id:x.id,n:x.name,r:x.rating,t:x.text,d:new Date(x.created_at).toLocaleDateString('ru'),u:x.user_id}))}
 async function doAuth(reg,ph,v){if(!sb){st.aerr='Нет связи с сервером. Обновите страницу.';return}const email=ph2e(ph);
-if(reg){const{data,error}=await sb.auth.signUp({email,password:v.pw});if(error){st.aerr=/registered/i.test(error.message)?'Этот номер уже зарегистрирован — войдите':'Ошибка регистрации: '+error.message;return}
+if(reg){const{data,error}=await sb.auth.signUp({email,password:v.pw});if(error){st.aerr=/registered/i.test(error.message)?'Этот номер уже зарегистрирован — войдите':'Ошибка регистрации: '+esc(error.message);return}
 if(!data.session){console.warn('Supabase: отключите Confirm email (Authentication → Sign In / Providers → Email)');st.aerr='Регистрация временно недоступна. Обратитесь к администратору клуба.';return}
 const pe=(await sb.from('profiles').insert({id:data.user.id,name:v.name.trim(),phone:v.phone.trim()})).error;if(pe)console.warn('profiles insert',pe)}
 else{const{error}=await sb.auth.signInWithPassword({email,password:v.pw});if(error){logEv('auth','login_fail',ph);st.aerr='Неверный номер или пароль';return}}
 await loadProfile();logEv('auth',reg?'register':'login',ph);st.aerr='';st.an='';st.aph='';st.tab='o'}
-const save=()=>{const j=JSON.stringify(P);if(localStorage.getItem('pp')!==j)localStorage.setItem('pp',j)};
+const save=()=>{try{const j=JSON.stringify(P);if(localStorage.getItem('pp')!==j)localStorage.setItem('pp',j)}catch(e){}};
 const alm=()=>new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Almaty'})),hrs=()=>st.prof?(+st.prof.hours||0):0;
 const hm=()=>new Date().toLocaleString('ru',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
 const st={di:0,time:'20:00',zone:'premium',stn:'P06',dur:3,pay:'kaspi',venue:0,modal:null,tab:'o',auth:'login',cat:'all',err:'',nav:'booking',prof:null,bk:[],tk:[],rv:[],isA:0,ad:{b:[],c:[],o:[]},lastId:0,lastTotal:0,lastFood:0,adm:0,at:'b',pc:'',pd:'',gg:'all',gl:'',gq:'',rate:0,rtext:'',rerr:'',an:'',aph:'',bz:0,ok:0,reason:'Нужна помощь с компьютером',note:'',sent:0,ferr:'',aerr:'',order:0};
 const I={cal:'<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/>',cart:'<path d="M3 4h2l2.2 10.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.6L20 8H6"/><circle cx="10" cy="20" r="1"/><circle cx="17" cy="20" r="1"/>',chev:'<path d="m9 18 6-6-6-6"/>',clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',coffee:'<path d="M4 9h13v5a6 6 0 0 1-6 6h-1a6 6 0 0 1-6-6V9Z"/><path d="M17 11h1a3 3 0 0 1 0 6h-2M7 4c0 1 1 1.5 1 2.5M12 4c0 1 1 1.5 1 2.5"/>',pad:'<path d="M7 7h10a5 5 0 0 1 4.6 7l-1.1 2.7a2.5 2.5 0 0 1-4 1l-1.6-1.4H9.1l-1.6 1.4a2.5 2.5 0 0 1-4-1L2.4 14A5 5 0 0 1 7 7Z"/><path d="M7 10v4M5 12h4M16 11h.01M18 13h.01"/>',head:'<path d="M4 14v-2a8 8 0 0 1 16 0v2"/><path d="M6 13H5a2 2 0 0 0-2 2v3a2 2 0 0 0 2 2h2v-7ZM18 13h1a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2h-2v-7Z"/>',loc:'<path d="M20 10c0 5-8 11-8 11S4 15 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/>',minus:'<path d="M5 12h14"/>',mon:'<rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/>',plus:'<path d="M12 5v14M5 12h14"/>',spark:'<path d="m12 2 1.5 5.5L19 9l-5.5 1.5L12 16l-1.5-5.5L5 9l5.5-1.5L12 2Z"/>',cup:'<path d="M8 4h8v4a4 4 0 0 1-8 0V4ZM10 12v4M14 12v4M8 20h8M10 16h4"/><path d="M8 6H4v1a4 4 0 0 0 4 4M16 6h4v1a4 4 0 0 1-4 4"/>',user:'<circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/>',wifi:'<path d="M5 12.5a10 10 0 0 1 14 0M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19" r="1"/>',bell:'<path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM10 21h4"/>'};
 const ic=(n,s=20)=>`<svg width="${s}" height="${s}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${I[n]}</svg>`;
-const D=Array.from({length:14},(_,i)=>{const d=alm();d.setDate(d.getDate()+i);const f=d.toLocaleDateString('ru',{day:'numeric',month:'long'}).split(' ');return{k:d.toDateString(),day:i?d.toLocaleDateString('ru',{weekday:'short'}).replace(/^./,c=>c.toUpperCase()):'Сегодня',n:f[0],m:f[1],full:d.toLocaleDateString('ru',{day:'numeric',month:'long',year:'numeric'})}});
+const buildD=()=>Array.from({length:14},(_,i)=>{const d=alm();d.setDate(d.getDate()+i);const f=d.toLocaleDateString('ru',{day:'numeric',month:'long'}).split(' ');return{k:d.toDateString(),day:i?d.toLocaleDateString('ru',{weekday:'short'}).replace(/^./,c=>c.toUpperCase()):'Сегодня',n:f[0],m:f[1],full:d.toLocaleDateString('ru',{day:'numeric',month:'long',year:'numeric'})}});
+let D=buildD();
 const HRS=Array.from({length:24},(_,i)=>String(i).padStart(2,'0')),MINS=['00','15','30','45'];
 const mins=t=>+t.slice(0,2)*60+ +t.slice(3,5),nowM=()=>{const n=alm();return n.getHours()*60+n.getMinutes()},m2t=m=>String(m/60|0).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
 const endT=()=>{const e=mins(st.time)+st.dur*60;return m2t(e%1440)+(e>=1440?' (на след. день)':'')};
@@ -208,7 +212,8 @@ const DEF={standard:'S01',premium:'P06',vip:'V01',bootcamp:'B01'};
 const AM=[['pad','PlayStation 5','2 лаунж-зоны, OLED 4K и коллекция игр'],['cup','Турнирная арена','Командные буткемпы и еженедельные турниры'],['coffee','Бар и кухня','Напитки, снеки и горячие комбо круглосуточно'],['wifi','Интернет 1 Гбит/с','Два независимых канала и низкий пинг']];
 const V=[['Pixel Point Центр','ул. Кабанбай батыра, 40','открыто 24/7'],['Pixel Point Абай','пр. Шакарима, 12','открыто 24/7']];
 const PM=[['hours','Баланс часов','','#6c42ef'],['kaspi','Kaspi Pay','K','#f14652'],['halyk','Halyk Bank','H','#08a35a'],['card','Visa / Mastercard','••','#182e71'],['cash','Оплата в клубе','₸','#c7f45a']];
-const TR=[['cs2','Counter-Strike 2','5 × 5 · Single Elimination','13 октября · 18:00','150 000 ₸',12,16],['val','Valorant','5 × 5 · Double Elimination','20 октября · 17:00','120 000 ₸',9,16],['dota','Dota 2','5 × 5 · Captain’s Mode','27 октября · 16:00','200 000 ₸',7,12]];
+const trd=(i,t)=>{const n=alm();let a=(2-n.getDay()+7)%7;if(a===0&&n.getHours()>=16)a=7;const d=alm();d.setHours(0,0,0,0);d.setDate(d.getDate()+a+7*i);return d.toLocaleDateString('ru',{day:'numeric',month:'long'})+' · '+t};
+const TR=[['cs2','Counter-Strike 2','5 × 5 · Single Elimination','18:00','150 000 ₸',12,16],['val','Valorant','5 × 5 · Double Elimination','17:00','120 000 ₸',9,16],['dota','Dota 2','5 × 5 · Captain’s Mode','16:00','200 000 ₸',7,12]];
 const img=id=>`https://images.unsplash.com/photo-${id}?auto=format&fit=crop&w=500&q=75`;
 const SH=[['cola','d','Coca-Cola','0,5 л · охлаждённая',650,'1613638866467-f5b589510366'],['water','d','Вода Tassay','0,5 л · без газа',350,'1622379535499-e5b991f93520'],['monster','d','Monster Energy','0,5 л · original',1200,'1622543925917-763c34d1a86e'],['rb','d','Red Bull','0,25 л · chilled',950,'1629203849746-7357277a421b'],['burger','f','Cyber Burger','Говядина · сыр · соус',2200,'1611309454921-16cef3438ee0'],['double','f','Double Frag Burger','Двойная котлета · бекон',2900,'1607730127050-e32a8c756fb9'],['fries','f','Картофель фри','Большая порция · соус',1100,'1518304256228-bb65fd3df672'],['ramen','f','Fire Ramen','Курица · яйцо · острый соус',1900,'1611280422374-fa3c1110c16e'],['combo','f','Night Combo','Бургер · фри · Cola',3200,'1495753379358-73c76ccd644b'],['cook','s','Cookies XL','Шоколадная крошка · 3 шт.',850,'1639779238456-92db5e070a03'],['mini','s','Mini Cookies','Хрустящее печенье · 150 г',700,'1613703154528-fa47dd7ffcfd'],['croc','s','Круассан','Шоколадная начинка',750,'1712566313171-943e8a1bd24a'],['nuts','s','Ореховый микс','Миндаль · кешью · 120 г',950,'1615221619383-9224628ee3c7']].map(a=>({id:a[0],c:a[1],n:a[2],m:a[3],p:a[4],im:img(a[5])}));
 const CATS=[['all','Всё'],['d','Напитки'],['f','Горячая еда'],['s','Снеки']];
@@ -285,11 +290,11 @@ ${st.err?`<div class="er">${st.err}</div>`:''}
 <button class="btn ${ok?'ok':''}" data-a="book">${ok?'Место забронировано ✓':'Забронировать'}</button>
 ${ok?`<div class="ok2">Бронь PP-${st.lastId} создана${st.lastFood?' вместе с заказом еды':''}. Общий счёт: ${fmt(st.lastTotal)}. Оплата: ${PM.find(m=>m[0]===st.pay)[1]}.</div>`:''}
 <div class="nt">Оплата на стойке клуба · Бесплатная отмена за 2 часа до начала</div></aside></section>
-${games()}<section class="sec dark" id="tournaments"><div class="hd"><div><div class="ey">Каждую неделю</div><h2>Турниры Pixel Point</h2><p>Собирай команду, участвуй в лигах и забирай реальные призовые.</p></div><div class="pill">${ic('cup',16)} Сезон · 2026</div></div>
-<div class="tg">${TR.map((t,i)=>{const r=P.tours.includes(t[0]);return `<div class="t"><div class="top"><b>0${i+1}</b><span>${i?'Скоро':'Регистрация открыта'}</span></div><h3>${t[1]}</h3><small>${t[2]}</small><div class="ti"><div><span>Дата</span><b>${t[3]}</b></div><div><span>Призовой фонд</span><b>${t[4]}</b></div></div><div class="tf"><span>${t[5]+(r?1:0)} / ${t[6]} команд</span><button class="tb ${r?'r':''}" data-a="tour" data-v="${t[0]}">${r?'Отменить участие':'Участвовать'}</button></div></div>`}).join('')}</div></section>
+${games()}<section class="sec dark" id="tournaments"><div class="hd"><div><div class="ey">Каждый вторник</div><h2>Турниры Pixel Point</h2><p>Собирай команду, участвуй в лигах и забирай реальные призовые.</p></div><div class="pill">${ic('cup',16)} Сезон · 2026</div></div>
+<div class="tg">${TR.map((t,i)=>{const r=P.tours.includes(t[0]);return `<div class="t"><div class="top"><b>0${i+1}</b><span>${i?'Скоро':'Регистрация открыта'}</span></div><h3>${t[1]}</h3><small>${t[2]}</small><div class="ti"><div><span>Дата</span><b>${trd(i,t[3])}</b></div><div><span>Призовой фонд</span><b>${t[4]}</b></div></div><div class="tf"><span>${t[5]+(r?1:0)} / ${t[6]} команд</span><button class="tb ${r?'r':''}" data-a="tour" data-v="${t[0]}">${r?'Отменить участие':'Участвовать'}</button></div></div>`}).join('')}</div></section>
 <section class="sec qs" id="quests"><div class="qi"><div class="orb">${ic('spark',28)}</div><div class="ey" style="color:var(--vi)">Награды за игру</div><h2>Квесты клуба</h2><p>Играй, выполняй задания и получай бесплатные часы прямо на аккаунт.</p><div class="qb"><span>Часов в подарок</span><b>${gift()}</b></div></div>
 <div class="ql">${Q().map(x=>{const c=x.prog>=x.goal,cl=(st.qc||[]).includes(x.id),pc=Math.round(Math.min(1,x.prog/x.goal)*100);return `<div class="q ${c?'c':''}"><div class="zi">${ic(x.i)}</div><div><div class="l"><div><b>${x.n}</b><small>${x.t}</small></div><em>+${x.r} ч</em></div><div class="pr"><i style="width:${pc}%"></i></div><div class="m"><span>${x.prog} / ${x.goal}</span><span>${pc}%</span></div></div><button class="qbt" ${cl?'disabled':''} data-a="quest" data-v="${x.id}">${cl?'Получено':c?'Забрать':'Играть'}</button></div>`}).join('')}</div></section>${reviews()}${info()}</main>
-<footer><div class="row"><div class="bm" style="width:30px;height:30px">${ic('pad',16)}</div><div class="bn">PIXEL<b>POINT</b></div></div><div>© 2026 Pixel Point · Семей, Казахстан · <button data-a="modal" data-v="adm" style="color:#ffffff90;text-decoration:underline;font-size:12px">Для администратора</button></div><div class="row"><span></span>${free()} компьютеров свободно сейчас</div></footer>
+<footer><div class="row"><div class="bm" style="width:30px;height:30px">${ic('pad',16)}</div><div class="bn">PIXEL<b>POINT</b></div></div><div>© 2026 Pixel Point · Семей, Казахстан · <button data-a="modal" data-v="adm" style="color:#ffffff90;text-decoration:underline;font-size:12px">Для администратора</button> · <a href="analytics.html" style="color:#ffffff90;text-decoration:underline;font-size:12px">Аналитика</a></div><div class="row"><span></span>${free()} компьютеров свободно сейчас</div></footer>
 <button class="fab" data-a="modal" data-v="admin"><span class="ic">${ic('bell',19)}</span><span><b>Вызвать администратора</b><small>Подойдём как можно скорее</small></span></button>`}
 
 function modal(){const m=st.modal;if(!m)return '';let c='',cls='';
@@ -317,7 +322,7 @@ c=`<div class="row"><div class="pf on" style="width:52px;height:52px;background:
 (st.tab==='o'?`<div class="wal"><div><small>Игровой баланс</small><b>${hrs()} <span style="font-size:13px;opacity:.6">часов</span></b><span style="font-size:11px;opacity:.5">Часы действуют во всех филиалах</span></div></div>
 <div class="bo"><div>Всего броней<b>${st.bk.length}</b></div><div>Часы в подарок<b>${gift()} ч</b></div><div>Уровень<b>Cyber Rookie</b></div><div>Турниры<b>${P.tours.length}</b></div></div><div class="ok2">Аккаунт подтверждён · ${esc(u.phone)}</div><button class="sb" data-a="toquests">Перейти к квестам и наградам</button><button class="lo" data-a="logout">Выйти из аккаунта</button>`:
 st.tab==='b'?`<div class="hs">${bk.length?bk.map(b=>`<div class="h"><div><b>${b.date}</b><span>${b.time} · ${b.dur} ч · ${fmt(b.total)}</span></div><div><b>${b.zone}</b><span>Компьютер ${b.stn}</span></div><em class="${b.st==='Предстоит'?'u':''}">${b.st}</em><span style="justify-self:start">${b.id}</span>${b.st==='Предстоит'?`<button data-a="cancel" data-v="${b.id}">Отменить бронь</button>`:''}</div>`).join(''):'<p class="mu">Броней пока нет. Выберите место на главной и нажмите «Забронировать».</p>'}</div>`:
-`<form class="ff" data-f="friend"><input class="in" name="l" autocomplete="off" placeholder="@логин_игрока"><button>Добавить</button></form>${st.ferr?`<div class="er">${st.ferr}</div>`:''}<div class="mu" style="margin:16px 0 0;font-size:12px;font-weight:800">Мои друзья · ${P.friends.length}</div>${P.friends.map(f=>`<div class="fr"><div class="zi">${f.l.slice(0,2).toUpperCase()}</div><div><b>@${esc(f.l)}</b><small class="${f.o?'o':''}">${f.s}</small></div><button data-a="unfriend" data-v="${f.l}">Удалить</button></div>`).join('')}`)}
+`<form class="ff" data-f="friend"><input class="in" name="l" autocomplete="off" placeholder="@логин_игрока"><button>Добавить</button></form>${st.ferr?`<div class="er">${st.ferr}</div>`:''}<div class="mu" style="margin:16px 0 0;font-size:12px;font-weight:800">Мои друзья · ${P.friends.length}</div>${P.friends.map(f=>`<div class="fr"><div class="zi">${f.l.slice(0,2).toUpperCase()}</div><div><b>@${esc(f.l)}</b><small class="${f.o?'o':''}">${esc(f.s)}</small></div><button data-a="unfriend" data-v="${esc(f.l)}">Удалить</button></div>`).join('')}`)}
 else c=`<div class="row"><div class="pf on" style="width:52px;height:52px;background:var(--vi);color:#fff">${ic('user',26)}</div><div><div class="mk">Pixel ID</div><h2 style="margin:0">Аккаунт игрока</h2></div></div>
 <div class="tabs"><button class="${st.auth==='login'?'on':''}" data-a="auth" data-v="login">Вход</button><button class="${st.auth==='reg'?'on':''}" data-a="auth" data-v="reg">Регистрация</button></div>
 <form class="fm" data-f="auth">${st.auth==='reg'?`<label><span>Ваше имя</span><input class="in" name="name" data-k="an" value="${esc(st.an)}" placeholder="Например, Данияр"></label>`:''}<label><span>Номер телефона</span><input class="in" name="phone" data-k="aph" value="${esc(st.aph)}" inputmode="tel" placeholder="+7 777 123 45 67"></label><label><span>Пароль</span><input class="in" name="pw" type="password" placeholder="Минимум 6 символов"></label>${st.aerr?`<div class="er">${st.aerr}</div>`:''}<button class="btn" style="margin:0">${st.auth==='login'?'Войти в аккаунт':'Создать аккаунт'}</button></form>`}
@@ -338,7 +343,7 @@ async quest(v){const x=Q().find(k=>k.id===v);if(!x)return;if(x.prog<x.goal){docu
 if(!me()){st.modal='prof';st.aerr='Войдите, чтобы получить награду';render();return}
 const{error}=await sb.rpc('claim_quest',{p_id:v});if(error)alert(error.message);await loadProfile();render()},
 cat(v){st.cat=v},cart(v){const[i,n]=v.split('|');const c=Math.max(0,(P.cart[i]||0)+ +n);c?P.cart[i]=c:delete P.cart[i];st.order=0},
-tobill(){st.modal=null;setTimeout(()=>document.querySelector('.sum')?.scrollIntoView({behavior:'smooth',block:'center'}))},order(){st.order=340+cnt();P.orders.unshift({id:Date.now(),num:st.order,stn:st.stn,t:hm(),total:sum(),items:SH.filter(p=>P.cart[p.id]).map(p=>p.n+' ×'+P.cart[p.id]).join(', '),s:0});P.cart={}},reason(v){st.reason=v},call(){P.calls.unshift({id:Date.now(),stn:st.stn,z:zone().n,r:st.reason,note:st.note.trim(),t:hm(),s:0});st.sent=1;st.note=''},
+tobill(){st.modal=null;setTimeout(()=>document.querySelector('.sum')?.scrollIntoView({behavior:'smooth',block:'center'}))},order(){st.order=340+cnt();P.orders.unshift({id:Date.now(),num:st.order,stn:st.stn,t:hm(),total:sum(),items:SH.filter(p=>P.cart[p.id]).map(p=>p.n+' ×'+P.cart[p.id]).join(', '),s:0});P.cart={}},reason(v){st.reason=v},
 tab(v){st.tab=v},auth(v){st.auth=v;st.aerr=''},
 toquests(){st.modal=null;setTimeout(()=>A.nav('quests'))},
 unfriend(v){P.friends=P.friends.filter(f=>f.l!==v)},
@@ -346,7 +351,7 @@ async book(){if(st.ok||st.bz)return;if(!sb){st.err='Нет связи с сер�
 if(pastT(st.time)){st.err='Это время уже прошло — выберите другое время или дату.';return}
 const z=zone();if(st.pay==='hours'&&hrs()<st.dur){st.err='На балансе недостаточно часов. Часы можно купить на стойке администратора.';return}
 st.bz=1;const d=D[st.di],{data,error}=await sb.rpc('create_booking',{p_k:d.k,p_label:d.full,p_time:st.time,p_zone:z.n,p_station:st.stn,p_venue:st.venue,p_dur:st.dur,p_pay:st.pay,p_promo:st.pd||'',p_cart:P.cart});st.bz=0;
-if(error){st.err=error.code==='23505'?'Это место уже занято на это время — выберите другое.':'Не удалось создать бронь: '+error.message;await loadTaken();render();return}
+if(error){st.err=error.code==='23505'?'Это место уже занято на это время — выберите другое.':'Не удалось создать бронь: '+esc(error.message);await loadTaken();render();return}
 if(st.di===0&&mins(st.time)-nowM()<=15){P.end=Date.now()+st.dur*36e5;P.sst=st.stn}
 st.lastId=data.id;st.lastTotal=data.total;st.lastFood=cnt();st.err='';P.cart={};st.ok=1;await loadProfile();await loadTaken();render()},
 async cancel(v){const{error}=await sb.rpc('cancel_booking',{p_id:+v.replace('PP-','')});if(error)alert(error.message);await loadProfile();await loadTaken();render()},
@@ -379,70 +384,97 @@ addEventListener('scroll',()=>{let c='booking';for(const id of['booking','tariff
 if(location.hash==='#admin')st.modal='adm';
 fix();render();
 (async()=>{await Promise.all([loadProfile(),loadReviews(),loadTaken()]);render()})();
-setInterval(async()=>{if(!sb||/INPUT|TEXTAREA/.test(document.activeElement.tagName))return;await loadTaken();await loadReviews();if(st.isA)await loadAdmin();render()},20000);
+setInterval(async()=>{if(D[0].k!==alm().toDateString()){D=buildD();st.di=0;st.ok=0;fix()}if(!sb||/INPUT|TEXTAREA/.test(document.activeElement.tagName))return;await loadTaken();await loadReviews();if(st.isA)await loadAdmin();render()},20000);
 </script>
 <!-- ИИ-помощник Pixel Point -->
 <style>
-#aic-btn{position:fixed;right:20px;bottom:20px;z-index:90;width:58px;height:58px;border-radius:18px;background:var(--vi);color:#fff;display:grid;place-items:center;box-shadow:0 12px 30px #6c42ef66;transition:.2s}
+#aic-btn{position:fixed;right:24px;bottom:92px;z-index:90;width:56px;height:56px;border-radius:18px;background:var(--vi);color:#fff;display:grid;place-items:center;box-shadow:0 12px 30px #6c42ef66;transition:.2s}
 #aic-btn:hover{transform:translateY(-3px);background:var(--vd)}
 #aic-btn svg{width:26px;height:26px}
-#aic-win{position:fixed;right:20px;bottom:90px;z-index:91;width:370px;max-width:calc(100vw - 24px);height:520px;max-height:calc(100vh - 110px);display:none;flex-direction:column;background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 24px 60px #211a3340;border:1px solid var(--ln)}
+#aic-win{position:fixed;right:24px;bottom:160px;z-index:91;width:380px;max-width:calc(100vw - 24px);height:540px;max-height:calc(100vh - 180px);display:none;flex-direction:column;background:#fff;border-radius:22px;overflow:hidden;box-shadow:0 24px 60px #211a3340;border:1px solid var(--ln)}
 #aic-win.open{display:flex}
 .aic-h{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--dk);color:#fff}
-.aic-h .av{width:34px;height:34px;border-radius:10px;background:var(--li);color:var(--dk);display:grid;place-items:center;font:700 13px 'Space Grotesk',sans-serif}
+.aic-h .av{width:34px;height:34px;border-radius:10px;background:var(--li);color:var(--dk);display:grid;place-items:center;font:700 13px 'Space Grotesk',sans-serif;flex:none}
 .aic-h b{font:700 15px 'Space Grotesk',sans-serif;display:block}
 .aic-h small{color:#ffffff99;font-size:11px}
-.aic-h button{margin-left:auto;color:#fff;font-size:22px;line-height:1;opacity:.8;padding:4px 8px}
+.aic-h .sp{margin-left:auto;display:flex;gap:2px}
+.aic-h button{color:#fff;font-size:13px;opacity:.8;padding:6px 8px;border-radius:8px}
+.aic-h button:hover{opacity:1;background:#ffffff1f}
+.aic-h #aic-x{font-size:22px;line-height:1;padding:2px 8px}
 #aic-log{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:8px;background:var(--cv)}
-.aic-m{max-width:85%;padding:9px 13px;border-radius:14px;line-height:1.45;white-space:pre-wrap;word-wrap:break-word;font-size:13.5px}
+.aic-m{max-width:86%;padding:9px 13px;border-radius:14px;line-height:1.45;word-wrap:break-word;font-size:13.5px}
+.aic-m p{margin:0}.aic-m p+p,.aic-m p+ul,.aic-m ul+p{margin-top:6px}
+.aic-m ul{margin:0;padding-left:18px}
 .aic-m.bot{background:#fff;border:1px solid var(--ln);align-self:flex-start;border-bottom-left-radius:4px}
-.aic-m.me{background:var(--vi);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.aic-m.me{background:var(--vi);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;white-space:pre-wrap}
 .aic-m.err{background:#fdecee;color:var(--r);border:1px solid #f3c5ca;align-self:flex-start}
-.aic-m.typ{color:var(--mu)}
+.aic-m.typ{display:flex;gap:4px;padding:12px 14px}
+.aic-m.typ i{width:7px;height:7px;border-radius:50%;background:var(--mu);animation:aicd 1.2s infinite ease-in-out}
+.aic-m.typ i:nth-child(2){animation-delay:.15s}.aic-m.typ i:nth-child(3){animation-delay:.3s}
+@keyframes aicd{0%,60%,100%{opacity:.25;transform:translateY(0)}30%{opacity:1;transform:translateY(-3px)}}
 .aic-q{display:flex;flex-wrap:wrap;gap:6px;padding:0 14px 10px;background:var(--cv)}
+.aic-q:empty{display:none}
 .aic-q button{padding:6px 11px;border:1px solid var(--ln);border-radius:20px;background:#fff;font-size:12px;font-weight:700;color:var(--vi)}
 .aic-q button:hover{border-color:var(--vi)}
 .aic-f{display:flex;gap:8px;padding:10px;border-top:1px solid var(--ln);background:#fff}
 #aic-in{flex:1;border:1px solid var(--ln);border-radius:12px;padding:10px 12px;outline:none;min-width:0}
 #aic-in:focus{border-color:var(--vi)}
 #aic-send{width:42px;border-radius:12px;background:var(--vi);color:#fff;display:grid;place-items:center}
-#aic-send:disabled{opacity:.5}
-@media(max-width:520px){#aic-win{right:12px;bottom:84px;height:calc(100vh - 110px)}#aic-btn{right:14px;bottom:14px}}
+#aic-send:disabled{opacity:.45;cursor:not-allowed}
+@media(max-width:720px){#aic-win{left:12px;right:12px;width:auto;max-width:none;bottom:156px;max-height:calc(100vh - 176px)}}
 </style>
-<button id="aic-btn" aria-label="ИИ-помощник"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M9 11h.01M12 11h.01M15 11h.01"/></svg></button>
+<button id="aic-btn" aria-label="Открыть ИИ-помощника" aria-expanded="false" aria-controls="aic-win"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M9 11h.01M12 11h.01M15 11h.01"/></svg></button>
 <div id="aic-win" role="dialog" aria-label="ИИ-помощник Pixel Point">
-  <div class="aic-h"><div class="av">AI</div><div><b>Помощник Pixel Point</b><small>Отвечает на вопросы о клубе и не только</small></div><button id="aic-x" aria-label="Закрыть">×</button></div>
-  <div id="aic-log"></div>
+  <div class="aic-h"><div class="av">AI</div><div><b>Помощник Pixel Point</b><small>Отвечает на вопросы о клубе и не только</small></div><div class="sp"><button id="aic-clear" aria-label="Очистить чат" title="Очистить чат">Очистить</button><button id="aic-x" aria-label="Закрыть">×</button></div></div>
+  <div id="aic-log" role="log" aria-live="polite"></div>
   <div class="aic-q" id="aic-q"></div>
-  <div class="aic-f"><input id="aic-in" maxlength="2000" placeholder="Напишите вопрос…" autocomplete="off"><button id="aic-send" aria-label="Отправить"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg></button></div>
+  <div class="aic-f"><input id="aic-in" maxlength="2000" placeholder="Напишите вопрос…" autocomplete="off" aria-label="Сообщение"><button id="aic-send" aria-label="Отправить" disabled><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13M22 2l-7 20-4-9-9-4z"/></svg></button></div>
 </div>
 <script>
 (()=>{
-const FN='smooth-worker'; // имя из URL функции в Supabase
-const $a=id=>document.getElementById(id),log=$a('aic-log'),inp=$a('aic-in'),snd=$a('aic-send'),win=$a('aic-win');
-const hist=[];let busy=false;
-const ERR={rate_limited:'Слишком много запросов. Подождите минуту и попробуйте снова.',upstream_error:'ИИ сейчас недоступен. Попробуйте позже.',no_model:'ИИ сейчас недоступен. Попробуйте позже.',no_api_key:'ИИ ещё не настроен.',network_error:'Нет связи с ИИ. Попробуйте позже.'};
-function add(cls,t){const d=document.createElement('div');d.className='aic-m '+cls;d.textContent=t;log.appendChild(d);log.scrollTop=log.scrollHeight;return d}
-function hello(){add('bot','Привет! Я ИИ-помощник Pixel Point. Расскажу про цены, зоны, бар, турниры и помогу с любым вопросом.');
- const q=$a('aic-q');['Сколько стоит час?','Что в баре?','Как забронировать?','Какие турниры?'].forEach(t=>{const b=document.createElement('button');b.textContent=t;b.onclick=()=>{q.innerHTML='';send(t)};q.appendChild(b)})}
+const FN='smooth-worker'; // имя функции из её URL в Supabase (…/functions/v1/smooth-worker)
+const KEY='aic_v1',MAX=20;
+const $a=id=>document.getElementById(id);
+const log=$a('aic-log'),inp=$a('aic-in'),snd=$a('aic-send'),win=$a('aic-win'),btn=$a('aic-btn'),qs=$a('aic-q');
+let hist=[],busy=false;
+try{hist=JSON.parse(sessionStorage.getItem(KEY)||'[]').filter(m=>m&&(m.role==='user'||m.role==='assistant')&&typeof m.content==='string').slice(-MAX)}catch{}
+const keep=()=>{try{sessionStorage.setItem(KEY,JSON.stringify(hist.slice(-MAX)))}catch{}};
+const ERR={rate_limited:'Слишком много запросов. Подождите минуту и попробуйте снова.',upstream_error:'ИИ сейчас недоступен. Попробуйте позже.',no_model:'ИИ сейчас недоступен. Попробуйте позже.',no_api_key:'ИИ ещё не настроен.',network_error:'Нет связи с ИИ. Попробуйте позже.',forbidden_origin:'Этот адрес сайта не разрешён для ИИ.'};
+// безопасное форматирование: **жирный**, списки и абзацы — только через DOM, без innerHTML
+function inline(el,t){t.split(/(\*\*[^*]+\*\*)/).forEach(p=>{if(/^\*\*[^*]+\*\*$/.test(p)){const b=document.createElement('b');b.textContent=p.slice(2,-2);el.appendChild(b)}else if(p)el.appendChild(document.createTextNode(p))})}
+function rich(el,t){let ul=null;t.replace(/\r/g,'').split('\n').forEach(line=>{const m=line.match(/^\s*(?:[-*•]|\d+[.)])\s+(.*)$/);
+ if(m){if(!ul){ul=document.createElement('ul');el.appendChild(ul)}const li=document.createElement('li');inline(li,m[1]);ul.appendChild(li)}
+ else{ul=null;if(line.trim()){const p=document.createElement('p');inline(p,line);el.appendChild(p)}}})}
+function add(cls,t){const d=document.createElement('div');d.className='aic-m '+cls;if(cls==='bot')rich(d,t);else d.textContent=t;log.appendChild(d);log.scrollTop=log.scrollHeight;return d}
+function typing(){const d=document.createElement('div');d.className='aic-m bot typ';d.setAttribute('aria-label','Печатает');d.innerHTML='<i></i><i></i><i></i>';log.appendChild(d);log.scrollTop=log.scrollHeight;return d}
+function chips(){qs.innerHTML='';['Сколько стоит час?','Что в баре?','Как забронировать?','Какие турниры?'].forEach(t=>{const b=document.createElement('button');b.textContent=t;b.onclick=()=>send(t);qs.appendChild(b)})}
+function fresh(){log.innerHTML='';add('bot','Привет! Я ИИ-помощник Pixel Point. Расскажу про цены, зоны, бар, турниры и помогу с любым вопросом.');chips()}
+function restore(){log.innerHTML='';if(!hist.length){fresh();return}add('bot','С возвращением! Продолжим разговор.');hist.forEach(m=>add(m.role==='user'?'me':'bot',m.content))}
+function setBusy(b){busy=b;upd()}
+function upd(){snd.disabled=busy||!inp.value.trim()}
 async function send(text){
   text=(text||'').trim();if(!text||busy)return;
   if(typeof sb==='undefined'||!sb){add('err','Нет связи с сервером. Обновите страницу.');return}
-  $a('aic-q').innerHTML='';inp.value='';add('me',text);hist.push({role:'user',content:text});
-  busy=true;snd.disabled=true;const t=add('bot typ','Печатает…');
+  qs.innerHTML='';inp.value='';add('me',text);hist.push({role:'user',content:text});keep();
+  setBusy(true);const t=typing();
+  const fail=m=>{t.remove();add('err',m);hist.pop();keep()};
   try{
-    const {data,error}=await Promise.race([sb.functions.invoke(FN,{body:{messages:hist.slice(-20)}}),new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),40000))]);
-    t.remove();
-    if(error||!data){console.warn('ai',error);add('err','Не удалось получить ответ. Попробуйте ещё раз.');hist.pop()}
-    else if(data.error){add('err',ERR[data.error]||'Ошибка. Попробуйте ещё раз.');hist.pop()}
-    else{add('bot',data.reply);hist.push({role:'assistant',content:data.reply})}
-  }catch(e){console.warn('ai',e);t.remove();add('err',e&&e.message==='timeout'?'ИИ долго не отвечает. Попробуйте ещё раз.':'Нет связи. Проверьте интернет.');hist.pop()}
-  busy=false;snd.disabled=false;inp.focus();
+    const {data,error}=await Promise.race([sb.functions.invoke(FN,{body:{messages:hist.slice(-MAX)}}),new Promise((_,rej)=>setTimeout(()=>rej(new Error('timeout')),40000))]);
+    if(error||!data){console.warn('ai',error);const s=error&&error.context&&error.context.status;fail(s===401||s===403?'ИИ временно недоступен (ошибка доступа).':'Не удалось получить ответ. Попробуйте ещё раз.')}
+    else if(data.error){fail(ERR[data.error]||'Ошибка. Попробуйте ещё раз.')}
+    else{t.remove();add('bot',data.reply);hist.push({role:'assistant',content:data.reply});keep()}
+  }catch(e){console.warn('ai',e);fail(e&&e.message==='timeout'?'ИИ долго не отвечает. Попробуйте ещё раз.':'Нет связи. Проверьте интернет.')}
+  setBusy(false);inp.focus();
 }
-$a('aic-btn').onclick=()=>{win.classList.toggle('open');if(win.classList.contains('open')){if(!log.children.length)hello();inp.focus()}};
-$a('aic-x').onclick=()=>win.classList.remove('open');
+function open(){win.classList.add('open');btn.setAttribute('aria-expanded','true');if(!log.children.length)restore();inp.focus()}
+function close(){win.classList.remove('open');btn.setAttribute('aria-expanded','false');btn.focus()}
+btn.onclick=()=>win.classList.contains('open')?close():open();
+$a('aic-x').onclick=close;
+$a('aic-clear').onclick=()=>{if(busy)return;hist=[];keep();fresh()};
 snd.onclick=()=>send(inp.value);
-inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send(inp.value)}});
+inp.addEventListener('input',upd);
+inp.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!e.isComposing){e.preventDefault();send(inp.value)}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&win.classList.contains('open'))close()});
 })();
 </script>
 </body>
